@@ -62,17 +62,14 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
 
   return (
     <div className="file-explorer">
-      <div className="file-explorer-header">
-        <h2>Workspace Files</h2>
-        <button onClick={handleSelectWorkspace}>
-          {workspaceRoot ? 'Change Workspace' : 'Set Workspace'}
-        </button>
-      </div>
-      
-      {workspaceRoot && (
-        <div className="workspace-info">
-          <span className="workspace-path">{workspaceRoot}</span>
-          <div className="search-box">
+      <div className="workspace-info">
+        <div className="workspace-header">
+          <span className="workspace-path" title={workspaceRoot}>{workspaceRoot}</span>
+          <button className="icon-button" onClick={handleSelectWorkspace} title="Change workspace">
+            📁
+          </button>
+        </div>
+        <div className="search-box">
             <input
               type="text"
               placeholder="Search files..."
@@ -109,13 +106,15 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
         <div className="file-list">
           {selectedFiles.map((file) => (
             <div key={file.path} className="file-item">
-              <span>{file.path.replace(workspaceRoot + '/', '')}</span>
+              <span title={file.path.replace(workspaceRoot + '/', '')}>{file.name}</span>
               <button
+                className="icon-button"
                 onClick={() => {
                   onFilesSelected(selectedFiles.filter(f => f.path !== file.path));
                 }}
+                title="Remove file"
               >
-                Remove
+                🗑️
               </button>
             </div>
           ))}
