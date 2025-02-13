@@ -1,6 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require('fs').promises;
-const path = require('path');
 require('@electron/remote/main').initialize();
 const path = require('path');
 const isDev = process.env.NODE_ENV !== 'production';
@@ -48,7 +47,7 @@ ipcMain.handle('open-file-dialog', async () => {
   const result = await dialog.showOpenDialog({
     properties: ['openFile', 'multiSelections']
   });
-  
+
   if (!result.canceled) {
     const files = await Promise.all(
       result.filePaths.map(async (filePath) => {
