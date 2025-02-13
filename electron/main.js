@@ -1,4 +1,6 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const fs = require('fs').promises;
+const path = require('path');
 require('@electron/remote/main').initialize();
 const path = require('path');
 const isDev = process.env.NODE_ENV !== 'production';
@@ -39,4 +41,26 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+// File handling IPC events
+ipcMain.handle('open-file-dialog', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile', 'multiSelections']
+  });
+  
+  if (!result.canceled) {
+    const files = await Promise.all(
+      result.filePaths.map(async (filePath) => {
+        const content = await fs.readFile(filePath, 'utf8');
+        return {
+          path: filePath,
+          name: path.basename(filePath),
+          content
+        };
+      })
+    );
+    return files;
+  }
+  return [];
 });

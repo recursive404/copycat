@@ -1,25 +1,10 @@
-import React, { useState } from 'react';
-import { dialog } from '@electron/remote';
-import fs from 'fs';
-import path from 'path';
+import React from 'react';
+const { ipcRenderer } = window.require('electron');
 
 const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
   const handleFileSelect = async () => {
-    const result = await dialog.showOpenDialog({
-      properties: ['openFile', 'multiSelections']
-    });
-
-    if (!result.canceled) {
-      const files = await Promise.all(
-        result.filePaths.map(async (filePath) => {
-          const content = await fs.promises.readFile(filePath, 'utf8');
-          return {
-            path: filePath,
-            name: path.basename(filePath),
-            content
-          };
-        })
-      );
+    const files = await ipcRenderer.invoke('open-file-dialog');
+    if (files.length > 0) {
       onFilesSelected(files);
     }
   };
