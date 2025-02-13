@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
+require('@electron/remote/main').initialize();
 const path = require('path');
 const isDev = process.env.NODE_ENV !== 'production';
 
