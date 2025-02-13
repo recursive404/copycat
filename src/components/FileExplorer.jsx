@@ -78,7 +78,6 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
             />
           </div>
         </div>
-      )}
 
       {searchQuery && (
         <div className="search-results">
@@ -122,6 +121,7 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
       </div>
     </div>
   );
+
 };
 
 export default FileExplorer;
