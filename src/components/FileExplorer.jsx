@@ -48,7 +48,7 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
       allFiles
         .filter(file => selectedSearchResults.has(file.path))
         .map(async (file) => {
-          const content = await fs.readFile(file.path, 'utf8');
+          const content = await ipcRenderer.invoke('read-file', file.path);
           return {
             ...file,
             content

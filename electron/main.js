@@ -36,6 +36,16 @@ app.on('window-all-closed', () => {
   }
 });
 
+ipcMain.handle('read-file', async (event, filePath) => {
+  try {
+    const content = await fs.readFile(filePath, 'utf8');
+    return content;
+  } catch (error) {
+    console.error('Error reading file:', error);
+    return null;
+  }
+});
+
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
@@ -64,19 +74,37 @@ ipcMain.handle('open-file-dialog', async () => {
   return [];
 });
 
+const ignore = require('ignore');
+
 async function getAllFiles(dir) {
   const files = [];
+  let ig;
+
+  try {
+    const gitignoreContent = await fs.readFile(path.join(dir, '.gitignore'), 'utf8');
+    ig = ignore().add(gitignoreContent);
+  } catch (error) {
+    ig = ignore();
+  }
+
+  // Always ignore node_modules
+  ig.add('node_modules');
 
   async function traverse(currentDir) {
     const entries = await fs.readdir(currentDir, { withFileTypes: true });
 
     for (const entry of entries) {
       const fullPath = path.join(currentDir, entry.name);
+      const relativePath = path.relative(dir, fullPath);
+
+      // Skip if path matches gitignore patterns
+      if (ig.ignores(relativePath)) {
+        continue;
+      }
 
       if (entry.isDirectory()) {
         await traverse(fullPath);
       } else {
-        const relativePath = path.relative(dir, fullPath);
         files.push({
           path: fullPath,
           name: entry.name,
