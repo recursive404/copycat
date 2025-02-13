@@ -13,6 +13,8 @@ function createWindow() {
       enableRemoteModule: true
     }
   });
+  
+  require("@electron/remote/main").enable(mainWindow.webContents);
 
   // Load the index.html from a url in development
   // and from the dist folder in production
