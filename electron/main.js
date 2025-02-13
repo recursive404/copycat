@@ -14,13 +14,13 @@ function createWindow() {
       webSecurity: false
     }
   });
-  
+
   require("@electron/remote/main").enable(mainWindow.webContents);
 
   // Load the index.html from a url in development
   // and from the dist folder in production
   if (isDev) {
-    mainWindow.loadURL('http://localhost:3000');
+    mainWindow.loadURL('http://localhost:3006');
     mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
