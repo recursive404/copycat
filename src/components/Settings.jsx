@@ -53,11 +53,17 @@ const Settings = ({ settings, onSettingsChange }) => {
         <label>
           Scroll Direction:
           <select
-            value={settings.scrollDirection || 'vertical'}
+            value={settings.scrollDirection || 'n'}
             onChange={(e) => handleChange('scrollDirection', e.target.value)}
           >
-            <option value="vertical">Vertical</option>
-            <option value="horizontal">Horizontal</option>
+            <option value="n">North ↑</option>
+            <option value="ne">North-East ↗</option>
+            <option value="e">East →</option>
+            <option value="se">South-East ↘</option>
+            <option value="s">South ↓</option>
+            <option value="sw">South-West ↙</option>
+            <option value="w">West ←</option>
+            <option value="nw">North-West ↖</option>
           </select>
         </label>
       </div>
@@ -73,6 +79,22 @@ const Settings = ({ settings, onSettingsChange }) => {
             onChange={(e) => handleChange('scrollSpeed', e.target.value)}
           />
           {settings.scrollSpeed || 1}x
+        </label>
+      </div>
+
+      <div className="settings-group">
+        <label>
+          Background Scale:
+          <select
+            value={settings.backgroundScale || 'cover'}
+            onChange={(e) => handleChange('backgroundScale', e.target.value)}
+          >
+            <option value="cover">Cover</option>
+            <option value="contain">Contain</option>
+            <option value="100%">100%</option>
+            <option value="150%">150%</option>
+            <option value="200%">200%</option>
+          </select>
         </label>
       </div>
     </div>
