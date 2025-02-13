@@ -47,42 +47,58 @@ function App() {
     // Apply scroll direction and speed to preview window
     const previewContent = document.querySelector('.preview-content');
     if (previewContent) {
-      const scrollSpeed = settings.scrollSpeed || 1;
+      const scrollSpeed = parseFloat(settings.scrollSpeed) || 0;
       const direction = settings.scrollDirection || 'n';
       
-      // Calculate scroll amounts based on direction
-      const getScrollAmounts = () => {
-        const base = 2 * scrollSpeed;
-        const diagonal = base * 0.7071; // cos(45°) ≈ 0.7071
-        
-        switch(direction) {
-          case 'n': return { x: 0, y: -base };
-          case 'ne': return { x: diagonal, y: -diagonal };
-          case 'e': return { x: base, y: 0 };
-          case 'se': return { x: diagonal, y: diagonal };
-          case 's': return { x: 0, y: base };
-          case 'sw': return { x: -diagonal, y: diagonal };
-          case 'w': return { x: -base, y: 0 };
-          case 'nw': return { x: -diagonal, y: -diagonal };
-          default: return { x: 0, y: 0 };
-        }
-      };
-
-      const scroll = () => {
-        const { x, y } = getScrollAmounts();
-        previewContent.scrollBy(x, y);
-        if (settings.scrollSpeed > 0) {
-          requestAnimationFrame(scroll);
-        }
-      };
-
-      // Clear any existing scroll animation
-      if (previewContent._scrollAnimation) {
-        cancelAnimationFrame(previewContent._scrollAnimation);
+      // Stop any existing animation
+      if (previewContent._scrollInterval) {
+        clearInterval(previewContent._scrollInterval);
+        previewContent._scrollInterval = null;
       }
 
-      if (settings.scrollSpeed > 0) {
-        previewContent._scrollAnimation = requestAnimationFrame(scroll);
+      if (scrollSpeed > 0) {
+        const getScrollAmounts = () => {
+          const base = scrollSpeed * 0.5; // Adjust base speed
+          const diagonal = base * 0.7071; // cos(45°) ≈ 0.7071
+          
+          switch(direction) {
+            case 'n': return { x: 0, y: -base };
+            case 'ne': return { x: diagonal, y: -diagonal };
+            case 'e': return { x: base, y: 0 };
+            case 'se': return { x: diagonal, y: diagonal };
+            case 's': return { x: 0, y: base };
+            case 'sw': return { x: -diagonal, y: diagonal };
+            case 'w': return { x: -base, y: 0 };
+            case 'nw': return { x: -diagonal, y: -diagonal };
+            default: return { x: 0, y: 0 };
+          }
+        };
+
+        // Use setInterval for more consistent scrolling
+        previewContent._scrollInterval = setInterval(() => {
+          const { x, y } = getScrollAmounts();
+          previewContent.scrollBy(x, y);
+
+          // Handle scroll boundaries
+          const atTop = previewContent.scrollTop <= 0;
+          const atBottom = previewContent.scrollTop + previewContent.clientHeight >= previewContent.scrollHeight;
+          const atLeft = previewContent.scrollLeft <= 0;
+          const atRight = previewContent.scrollLeft + previewContent.clientWidth >= previewContent.scrollWidth;
+
+          // Reset position if we hit boundaries
+          if ((atTop && y < 0) || (atBottom && y > 0) || 
+              (atLeft && x < 0) || (atRight && x > 0)) {
+            if (y < 0 || x < 0) {
+              // If scrolling up/left, jump to bottom/right
+              previewContent.scrollTop = previewContent.scrollHeight;
+              previewContent.scrollLeft = previewContent.scrollWidth;
+            } else {
+              // If scrolling down/right, jump to top/left
+              previewContent.scrollTop = 0;
+              previewContent.scrollLeft = 0;
+            }
+          }
+        }, 16); // ~60fps
       }
     }
   }, [settings]);
