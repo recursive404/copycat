@@ -1,6 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require('fs').promises;
-const path = require('path');
 require('@electron/remote/main').initialize();
 const path = require('path');
 const isDev = process.env.NODE_ENV !== 'production';
@@ -67,13 +66,13 @@ ipcMain.handle('open-file-dialog', async () => {
 
 async function getAllFiles(dir) {
   const files = [];
-  
+
   async function traverse(currentDir) {
     const entries = await fs.readdir(currentDir, { withFileTypes: true });
-    
+
     for (const entry of entries) {
       const fullPath = path.join(currentDir, entry.name);
-      
+
       if (entry.isDirectory()) {
         await traverse(fullPath);
       } else {
@@ -86,7 +85,7 @@ async function getAllFiles(dir) {
       }
     }
   }
-  
+
   await traverse(dir);
   return files;
 }
