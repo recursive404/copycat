@@ -25,9 +25,11 @@ body::before {
   z-index: -1;
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: repeat;
   filter: blur(var(--blur, 0px));
   transition: filter 0.3s ease;
+  animation: var(--bg-animation, none);
+  animation: none; /* Will be set dynamically */
 }
 
 .app {

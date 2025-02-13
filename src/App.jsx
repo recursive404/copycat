@@ -44,62 +44,60 @@ function App() {
       document.body.style.removeProperty('background-size');
     }
 
-    // Apply scroll direction and speed to preview window
-    const previewContent = document.querySelector('.preview-content');
-    if (previewContent) {
-      const scrollSpeed = parseFloat(settings.scrollSpeed) || 0;
-      const direction = settings.scrollDirection || 'n';
-      
-      // Stop any existing animation
-      if (previewContent._scrollInterval) {
-        clearInterval(previewContent._scrollInterval);
-        previewContent._scrollInterval = null;
-      }
+    // Apply scroll animation to background
+    const scrollSpeed = parseFloat(settings.scrollSpeed) || 0;
+    const direction = settings.scrollDirection || 'n';
 
-      if (scrollSpeed > 0) {
-        const getScrollAmounts = () => {
-          const base = scrollSpeed * 0.5; // Adjust base speed
-          const diagonal = base * 0.7071; // cos(45°) ≈ 0.7071
-          
-          switch(direction) {
-            case 'n': return { x: 0, y: -base };
-            case 'ne': return { x: diagonal, y: -diagonal };
-            case 'e': return { x: base, y: 0 };
-            case 'se': return { x: diagonal, y: diagonal };
-            case 's': return { x: 0, y: base };
-            case 'sw': return { x: -diagonal, y: diagonal };
-            case 'w': return { x: -base, y: 0 };
-            case 'nw': return { x: -diagonal, y: -diagonal };
-            default: return { x: 0, y: 0 };
-          }
-        };
+    // Calculate animation properties based on direction and speed
+    let keyframes = '';
+    const duration = 20 / (scrollSpeed || 1); // Base duration inversely proportional to speed
 
-        // Use setInterval for more consistent scrolling
-        previewContent._scrollInterval = setInterval(() => {
-          const { x, y } = getScrollAmounts();
-          previewContent.scrollBy(x, y);
+    switch(direction) {
+      case 'n':
+        keyframes = '@keyframes bgScroll { from { background-position: 50% 100%; } to { background-position: 50% 0%; } }';
+        break;
+      case 's':
+        keyframes = '@keyframes bgScroll { from { background-position: 50% 0%; } to { background-position: 50% 100%; } }';
+        break;
+      case 'e':
+        keyframes = '@keyframes bgScroll { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }';
+        break;
+      case 'w':
+        keyframes = '@keyframes bgScroll { from { background-position: 100% 50%; } to { background-position: 0% 50%; } }';
+        break;
+      case 'ne':
+        keyframes = '@keyframes bgScroll { from { background-position: 0% 100%; } to { background-position: 100% 0%; } }';
+        break;
+      case 'nw':
+        keyframes = '@keyframes bgScroll { from { background-position: 100% 100%; } to { background-position: 0% 0%; } }';
+        break;
+      case 'se':
+        keyframes = '@keyframes bgScroll { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }';
+        break;
+      case 'sw':
+        keyframes = '@keyframes bgScroll { from { background-position: 100% 0%; } to { background-position: 0% 100%; } }';
+        break;
+      default:
+        keyframes = '';
+    }
 
-          // Handle scroll boundaries
-          const atTop = previewContent.scrollTop <= 0;
-          const atBottom = previewContent.scrollTop + previewContent.clientHeight >= previewContent.scrollHeight;
-          const atLeft = previewContent.scrollLeft <= 0;
-          const atRight = previewContent.scrollLeft + previewContent.clientWidth >= previewContent.scrollWidth;
+    // Remove existing animation style element
+    const existingStyle = document.getElementById('bg-animation');
+    if (existingStyle) {
+      existingStyle.remove();
+    }
 
-          // Reset position if we hit boundaries
-          if ((atTop && y < 0) || (atBottom && y > 0) || 
-              (atLeft && x < 0) || (atRight && x > 0)) {
-            if (y < 0 || x < 0) {
-              // If scrolling up/left, jump to bottom/right
-              previewContent.scrollTop = previewContent.scrollHeight;
-              previewContent.scrollLeft = previewContent.scrollWidth;
-            } else {
-              // If scrolling down/right, jump to top/left
-              previewContent.scrollTop = 0;
-              previewContent.scrollLeft = 0;
-            }
-          }
-        }, 16); // ~60fps
-      }
+    if (scrollSpeed > 0 && keyframes) {
+      // Add new animation style
+      const style = document.createElement('style');
+      style.id = 'bg-animation';
+      style.textContent = keyframes;
+      document.head.appendChild(style);
+
+      // Apply animation to body::before
+      document.body.style.setProperty('--bg-animation', `bgScroll ${duration}s linear infinite`);
+    } else {
+      document.body.style.setProperty('--bg-animation', 'none');
     }
   }, [settings]);
 
