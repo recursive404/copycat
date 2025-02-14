@@ -1,11 +1,11 @@
 import React from 'react';
 const { ipcRenderer } = window.require('electron');
 
-const Settings = ({ settings, onSettingsChange, workspaceRoot, setWorkspaceRoot }) => {
+const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
   const handleSelectWorkspace = async () => {
     const result = await ipcRenderer.invoke('select-directory');
     if (result) {
-      setWorkspaceRoot(result);
+      setWorkspace(result);
       // Clear selected files when workspace changes
       ipcRenderer.send('clear-selected-files');
     }
@@ -114,7 +114,7 @@ const Settings = ({ settings, onSettingsChange, workspaceRoot, setWorkspaceRoot 
           <div className="workspace-control">
             <input
               type="text"
-              value={workspaceRoot?.path || workspaceRoot || ''}
+              value={workspace?.path || ''}
               readOnly
               placeholder="No workspace selected"
               style={{ flex: 1 }}
