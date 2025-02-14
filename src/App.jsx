@@ -6,6 +6,7 @@ import PreviewWindow from './components/PreviewWindow';
 import PromptInput from './components/PromptInput';
 import Settings from './components/Settings';
 import Modal from './components/Modal';
+import SelectedFiles from './components/SelectedFiles';
 import './styles/main.css';
 
 function App() {
