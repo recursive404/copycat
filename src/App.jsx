@@ -181,6 +181,13 @@ function App() {
         <div className="full-panel">
           <div className="file-controls">
             <button
+              className="preview-files-button"
+              onClick={() => setShowSelectedModal(true)}
+              title={`${selectedFiles.length} files selected`}
+            >
+              📄 {selectedFiles.length}
+            </button>
+            <button
               className="add-files-button"
               onClick={() => setShowFileModal(true)}
             >
@@ -209,14 +216,6 @@ function App() {
             workspace={workspace}
           />
         </Modal>
-
-        <button
-          className="preview-files-button"
-          onClick={() => setShowSelectedModal(true)}
-          title={`${selectedFiles.length} files selected`}
-        >
-          📄 {selectedFiles.length}
-        </button>
 
         <Modal
           isOpen={showSelectedModal}
