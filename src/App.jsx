@@ -10,6 +10,7 @@ import SelectedFiles from './components/SelectedFiles';
 import './styles/main.css';
 
 function App() {
+
   // Load selected files from localStorage or use empty array
   const [selectedFiles, setSelectedFiles] = useState(() => {
     const savedFiles = localStorage.getItem('selectedFiles');
@@ -183,7 +184,7 @@ function App() {
       <div className="main-container">
         <div className="full-panel">
           <div className="file-controls">
-            <button 
+            <button
               className="add-files-button"
               onClick={() => setShowFileModal(true)}
             >
