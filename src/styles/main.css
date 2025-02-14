@@ -1,11 +1,11 @@
 :root {
-  --primary-bg: #1a1b1e;
-  --secondary-bg: #2c2e33;
+  --primary-bg: #0a0b0e;
+  --secondary-bg: #151619;
   --text-primary: #e0e0e0;
-  --text-secondary: #a0a0a0;
+  --text-secondary: #808080;
   --accent: #00ff9d;
-  --border-color: #404040;
-  --hover-bg: #3a3d45;
+  --border-color: #2a2a2a;
+  --hover-bg: #1f2227;
 }
 
 body {
@@ -156,7 +156,8 @@ body::before {
 }
 
 .file-modal {
-  background: var(--secondary-bg);
+  background: var(--primary-bg);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   width: 80%;
   max-width: 1200px;
@@ -164,6 +165,7 @@ body::before {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .modal-header {
@@ -220,10 +222,15 @@ body::before {
 .search-box input {
   width: 100%;
   padding: 0.5rem;
-  background-color: var(--primary-bg);
+  background-color: var(--secondary-bg);
   border: 1px solid var(--border-color);
   border-radius: 4px;
   color: var(--text-primary);
+}
+
+.search-box input:focus {
+  border-color: var(--accent);
+  outline: none;
 }
 
 .search-results {
@@ -309,7 +316,13 @@ body::before {
   padding: 0.5rem;
   border-radius: 4px;
   margin-bottom: 0.5rem;
-  background-color: var(--primary-bg);
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+}
+
+.file-item:hover {
+  border-color: var(--accent);
+  background-color: var(--hover-bg);
 }
 
 /* Preview Window */
