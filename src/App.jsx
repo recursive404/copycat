@@ -280,7 +280,11 @@ function App() {
         >
           <FileExplorer
             onFilesSelected={(files) => {
-              setSelectedFiles(prev => [...prev, ...files]);
+              // Create a Map using file paths as keys to ensure uniqueness
+              const uniqueFiles = new Map(
+                [...selectedFiles, ...files].map(file => [file.path, file])
+              );
+              setSelectedFiles(Array.from(uniqueFiles.values()));
               setShowFileModal(false);
             }}
             selectedFiles={selectedFiles}

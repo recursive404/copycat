@@ -137,7 +137,7 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
             if (window.confirm('Are you sure you want to reset all settings and clear selected files?')) {
               localStorage.clear();
               setWorkspace(null);
-              onFilesSelected([]);
+              // Remove reference to undefined onFilesSelected
               window.location.reload();
             }
           }}

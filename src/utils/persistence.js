@@ -3,10 +3,15 @@ const { ipcRenderer } = window.require('electron');
 // Save files to localStorage
 export const saveFiles = (files) => {
   try {
-    const serializedFiles = JSON.stringify(files.map(file => ({
+    // Ensure we only save unique files by path
+    const uniqueFiles = Array.from(
+      new Map(files.map(file => [file.path, file])).values()
+    );
+    
+    const serializedFiles = JSON.stringify(uniqueFiles.map(file => ({
       path: file.path,
       name: file.name,
-      content: file.content // Also save content to avoid unnecessary re-reads
+      content: file.content
     })));
     localStorage.setItem('selectedFiles', serializedFiles);
     return true;
