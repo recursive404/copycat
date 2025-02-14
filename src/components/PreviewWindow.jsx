@@ -30,11 +30,50 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
     setCollapsedFiles(newCollapsed);
   };
 
+  const [stickyHeaders, setStickyHeaders] = useState(new Set());
+
+  useEffect(() => {
+    const handleScroll = (e) => {
+      const previewContent = e.target;
+      const headers = previewContent.getElementsByClassName('file-preview-header');
+      const newStickyHeaders = new Set();
+
+      Array.from(headers).forEach((header) => {
+        const rect = header.getBoundingClientRect();
+        const parentRect = header.closest('.file-preview-item').getBoundingClientRect();
+        
+        if (parentRect.top <= rect.height && parentRect.bottom >= rect.height) {
+          newStickyHeaders.add(header.closest('.file-preview-item').dataset.filePath);
+        }
+      });
+
+      setStickyHeaders(newStickyHeaders);
+    };
+
+    const previewContent = document.querySelector('.preview-content');
+    if (previewContent) {
+      previewContent.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (previewContent) {
+        previewContent.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, []);
+
   return (
     <div className="preview-window">
-      <div className="preview-content" style={{ paddingTop: '0.5rem' }}>
+      <div className="preview-content" style={{ paddingTop: '0.5rem', position: 'relative' }}>
         {files.map((file, index) => (
-          <div key={`${file.path}-${index}`} className="file-preview-item">
+          <div 
+            key={`${file.path}-${index}`} 
+            className="file-preview-item"
+            data-file-path={file.path}
+            style={{
+              paddingTop: stickyHeaders.has(file.path) ? '3rem' : '1rem'
+            }}
+          >
             <div
               className="file-preview-header"
               onClick={(e) => {
