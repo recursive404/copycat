@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const PreviewWindow = ({ files, onRemoveFile }) => {
   const [collapsedFiles, setCollapsedFiles] = useState(new Set());
@@ -52,7 +54,19 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
             </div>
             {!collapsedFiles.has(file.path) && (
               <div className="file-preview-content">
-                <pre>{file.content}</pre>
+                <SyntaxHighlighter 
+                  language={file.language || 'text'}
+                  style={docco}
+                  showLineNumbers
+                  lineNumberStyle={{ color: '#999', marginRight: '1em' }}
+                  customStyle={{ 
+                    backgroundColor: 'transparent',
+                    padding: 0,
+                    margin: 0
+                  }}
+                >
+                  {file.content}
+                </SyntaxHighlighter>
               </div>
             )}
           </div>
