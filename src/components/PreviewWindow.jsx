@@ -23,21 +23,28 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
       <div className="preview-content">
         {files.map((file) => (
           <div key={file.path} className="file-preview-item">
-            <div className="file-preview-header">
-              <button 
-                className="icon-button"
-                onClick={() => toggleCollapse(file.path)}
-                title={collapsedFiles.has(file.path) ? 'Expand' : 'Collapse'}
-              >
+            <div 
+              className="file-preview-header"
+              onClick={(e) => {
+                // Only trigger if click wasn't on the trash icon
+                if (!e.target.closest('.remove-icon')) {
+                  toggleCollapse(file.path);
+                }
+              }}
+            >
+              <div className="icon-container">
                 <FontAwesomeIcon 
                   icon={collapsedFiles.has(file.path) ? faChevronRight : faChevronDown} 
                   size="sm"
                 />
-              </button>
+              </div>
               <h3 className="file-name" title={file.path}>{file.name}</h3>
               <div 
                 className="remove-icon"
-                onClick={() => onRemoveFile(file)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveFile(file);
+                }}
                 title="Remove file"
               >
                 <FontAwesomeIcon icon={faTrash} size="sm" />

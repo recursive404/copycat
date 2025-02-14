@@ -364,6 +364,21 @@ body::before {
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.file-preview-header:hover {
+  background-color: var(--hover-bg);
+}
+
+.icon-container {
+  width: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .file-preview-header h3 {
