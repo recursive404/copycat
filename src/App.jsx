@@ -122,6 +122,7 @@ function App() {
   }, [settings]);
 
   const [showSettings, setShowSettings] = useState(false);
+  const [showFileModal, setShowFileModal] = useState(false);
   const [workspaceRoot, setWorkspaceRoot] = useState(() => {
     const savedWorkspace = localStorage.getItem('workspaceRoot');
     return savedWorkspace || '';
@@ -151,6 +152,14 @@ function App() {
       )}
       <div className="main-container">
         <div className="full-panel">
+          <div className="file-controls">
+            <button 
+              className="add-files-button"
+              onClick={() => setShowFileModal(true)}
+            >
+              + Add Files
+            </button>
+          </div>
           <PreviewWindow content={previewContent} />
           <PromptInput
             value={prompt}
@@ -158,6 +167,28 @@ function App() {
             onSubmit={() => {/* TODO */}}
           />
         </div>
+
+        {showFileModal && (
+          <div className="file-modal-overlay">
+            <div className="file-modal">
+              <div className="modal-header">
+                <h3>Select Files</h3>
+                <button 
+                  className="close-button"
+                  onClick={() => setShowFileModal(false)}
+                >
+                  &times;
+                </button>
+              </div>
+              <FileExplorer
+                onFilesSelected={(files) => {
+                  setSelectedFiles(prev => [...prev, ...files]);
+                }}
+                selectedFiles={selectedFiles}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
