@@ -460,13 +460,8 @@ body::before {
 }
 
 .file-preview-item {
-  border-bottom: 1px solid var(--border-color);
   padding: 1rem;
   position: relative;
-}
-
-.file-preview-item:last-child {
-  border-bottom: none;
 }
 
 .file-preview-header {

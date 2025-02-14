@@ -71,7 +71,8 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
             className="file-preview-item"
             data-file-path={file.path}
             style={{
-              paddingTop: stickyHeaders.has(file.path) ? '3rem' : '1rem'
+              paddingTop: stickyHeaders.has(file.path) ? '3rem' : '1rem',
+              borderBottom: 'none'
             }}
           >
             <div
