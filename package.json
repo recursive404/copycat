@@ -17,7 +17,9 @@
     "ignore": "^5.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-toastify": "^11.0.3"
+    "react-toastify": "^11.0.3",
+    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
