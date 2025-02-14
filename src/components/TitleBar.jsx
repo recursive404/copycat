@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faWindowMinimize, faWindowMaximize, faXmark, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
-import { remote } from '@electron/remote';
+import { getCurrentWindow, minimize, maximize, unmaximize, close } from '@electron/remote';
 import './../styles/titlebar.css';
 
 const TitleBar = () => {
+  const [isMaximized, setIsMaximized] = useState(false);
+  const win = getCurrentWindow();
+
   const handleMinimize = () => {
-    remote.getCurrentWindow().minimize();
+    minimize();
   };
 
-  const [isMaximized, setIsMaximized] = useState(false);
-
   const handleMaximize = () => {
-    const win = remote.getCurrentWindow();
     if (win.isMaximized()) {
-      win.unmaximize();
+      unmaximize();
       setIsMaximized(false);
     } else {
-      win.maximize();
+      maximize();
       setIsMaximized(true);
     }
   };
 
   const handleClose = () => {
-    remote.getCurrentWindow().close();
+    close();
   };
 
   return (
