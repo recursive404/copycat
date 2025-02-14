@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { loadFiles } from './utils/persistence';
 import TitleBar from './components/TitleBar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,10 +14,16 @@ function App() {
 
   const [showSettings, setShowSettings] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState(() => {
-    const savedFiles = localStorage.getItem('selectedFiles');
-    return savedFiles ? JSON.parse(savedFiles) : [];
-  });
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  // Load saved files on startup
+  useEffect(() => {
+    const loadSavedFiles = async () => {
+      const files = await loadFiles();
+      setSelectedFiles(files);
+    };
+    loadSavedFiles();
+  }, []);
   const [previewContent, setPreviewContent] = useState('');
   const [prompt, setPrompt] = useState('');
   const [workspace, setWorkspace] = useState(() => {
@@ -173,6 +180,7 @@ function App() {
           onSettingsChange={setSettings}
           workspace={workspace}
           setWorkspace={setWorkspace}
+          selectedFiles={selectedFiles}
         />
       </Modal>
       <div className="main-container">
