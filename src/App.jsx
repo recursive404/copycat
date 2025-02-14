@@ -209,63 +209,68 @@ function App() {
             }}
           />
           <div className="action-area">
-            <PromptInput
-              value={prompt}
-              onChange={setPrompt}
-              onSubmit={() => {/* TODO */}}
-            />
-            <div className="action-buttons">
-            <button
-              className="action-button primary"
-              onClick={() => setShowFileModal(true)}
-              title="Add Files"
-            >
-              <i className="fas fa-plus"></i>
-            </button>
-            <button
-              className="action-button"
-              onClick={async () => {
-                try {
-                  const text = selectedFiles
-                    .map(file => `// ${file.name}\n${file.content}`)
-                    .join('\n\n');
-                  await navigator.clipboard.writeText(text);
-                  toast.success('Copied files to clipboard');
-                } catch (error) {
-                  toast.error('Failed to copy files');
-                }
-              }}
-              title="Copy All"
-            >
-              <i className="fas fa-copy"></i>
-            </button>
-            <button
-              className="action-button"
-              onClick={async () => {
-                try {
-                  const refreshedFiles = await loadFiles();
-                  setSelectedFiles(refreshedFiles);
-                  toast.success('Files refreshed successfully');
-                } catch (error) {
-                  toast.error('Failed to refresh files');
-                }
-              }}
-              title="Refresh"
-            >
-              <i className="fas fa-sync"></i>
-            </button>
-            <button
-              className="action-button danger"
-              onClick={() => {
-                if (window.confirm('Are you sure you want to clear all files?')) {
-                  setSelectedFiles([]);
-                }
-              }}
-              title="Clear All"
-            >
-              <i className="fas fa-trash"></i>
-            </button>
-          </div>
+            <div className="prompt-input">
+              <textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Enter your prompt here..."
+              />
+              <div className="prompt-actions">
+                <button
+                  className="primary-action"
+                  onClick={async () => {
+                    try {
+                      const text = selectedFiles
+                        .map(file => `// ${file.name}\n${file.content}`)
+                        .join('\n\n');
+                      await navigator.clipboard.writeText(text);
+                      toast.success('Copied files to clipboard');
+                    } catch (error) {
+                      toast.error('Failed to copy files');
+                    }
+                  }}
+                  title="Copy All Files"
+                >
+                  <i className="fas fa-copy"></i> Copy
+                </button>
+                <div className="secondary-actions">
+                  <button
+                    className="action-button"
+                    onClick={() => setShowFileModal(true)}
+                    title="Add Files"
+                  >
+                    <i className="fas fa-plus"></i>
+                  </button>
+                  <button
+                    className="action-button"
+                    onClick={async () => {
+                      try {
+                        const refreshedFiles = await loadFiles();
+                        setSelectedFiles(refreshedFiles);
+                        toast.success('Files refreshed successfully');
+                      } catch (error) {
+                        toast.error('Failed to refresh files');
+                      }
+                    }}
+                    title="Refresh Files"
+                  >
+                    <i className="fas fa-sync"></i>
+                  </button>
+                  <button
+                    className="action-button danger"
+                    onClick={() => {
+                      if (window.confirm('Are you sure you want to clear all files?')) {
+                        setSelectedFiles([]);
+                        toast.success('All files cleared');
+                      }
+                    }}
+                    title="Clear All Files"
+                  >
+                    <i className="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
         </div>
 
         <Modal
