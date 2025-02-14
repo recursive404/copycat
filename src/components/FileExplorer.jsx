@@ -65,6 +65,28 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
       <div className="workspace-info">
         <div className="workspace-header">
           <span className="workspace-path" title={workspaceRoot}>{workspaceRoot}</span>
+          <input
+            type="file"
+            id="file-input"
+            style={{ display: 'none' }}
+            multiple
+            onChange={async (e) => {
+              const files = Array.from(e.target.files).map(file => ({
+                path: file.path,
+                name: file.name
+              }));
+              const filesWithContent = await Promise.all(
+                files.map(async (file) => {
+                  const content = await ipcRenderer.invoke('read-file', file.path);
+                  return {
+                    ...file,
+                    content
+                  };
+                })
+              );
+              onFilesSelected([...selectedFiles, ...filesWithContent]);
+            }}
+          />
           <button className="icon-button" onClick={handleSelectWorkspace} title="Change workspace">
             📁
           </button>
