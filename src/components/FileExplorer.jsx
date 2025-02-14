@@ -11,11 +11,16 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
   // Load workspace and files when component mounts
   useEffect(() => {
     const loadWorkspace = async () => {
-      const workspace = await ipcRenderer.invoke('get-workspace');
-      if (workspace) {
-        setAllFiles(workspace.files);
-        // Show initial results
-        handleSearch('');
+      try {
+        const result = await ipcRenderer.invoke('select-directory');
+        if (result) {
+          setAllFiles(result.files);
+          await ipcRenderer.invoke('set-workspace', result);
+          handleSearch('');
+        }
+      } catch (error) {
+        console.error('Failed to load workspace:', error);
+        setAllFiles([]);
       }
     };
     loadWorkspace();
