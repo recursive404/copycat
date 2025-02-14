@@ -27,10 +27,17 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
         limit: 50,
         threshold: -10000,
       }).map(result => result.obj) :
-      allFiles.slice(0, 50); // Show first 50 files when no query
+      allFiles.slice(0, 100); // Show first 100 files when no query
 
     setSearchResults(results);
   }, [allFiles]);
+
+  // Initialize search results when files are loaded
+  useEffect(() => {
+    if (allFiles.length > 0) {
+      handleSearch('');
+    }
+  }, [allFiles, handleSearch]);
 
   const toggleFileSelection = (file) => {
     const newSelected = new Set(selectedSearchResults);
@@ -102,25 +109,6 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
         </div>
       )}
 
-      <div className="selected-files">
-        <h3>Selected Files</h3>
-        <div className="file-list">
-          {selectedFiles.map((file) => (
-            <div key={file.path} className="file-item">
-              <span title={file.path}>{file.name}</span>
-              <button
-                className="icon-button"
-                onClick={() => {
-                  onFilesSelected(selectedFiles.filter(f => f.path !== file.path));
-                }}
-                title="Remove file"
-              >
-                🗑️
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 

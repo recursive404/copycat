@@ -125,6 +125,7 @@ function App() {
 
   const [showSettings, setShowSettings] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
+  const [showSelectedModal, setShowSelectedModal] = useState(false);
   const [workspace, setWorkspace] = useState(() => {
     const savedWorkspace = localStorage.getItem('workspace');
     return savedWorkspace ? JSON.parse(savedWorkspace) : null;
@@ -165,14 +166,18 @@ function App() {
       >
         ⚙️
       </button>
-      {showSettings && (
+      <Modal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        title="Settings"
+      >
         <Settings
           settings={settings}
           onSettingsChange={setSettings}
           workspace={workspace}
           setWorkspace={setWorkspace}
         />
-      )}
+      </Modal>
       <div className="main-container">
         <div className="full-panel">
           <div className="file-controls">
@@ -191,32 +196,41 @@ function App() {
           />
         </div>
 
-        {showFileModal && (
-          <div className="file-modal-overlay" onClick={(e) => {
-            if (e.target.className === 'file-modal-overlay') {
+        <Modal
+          isOpen={showFileModal}
+          onClose={() => setShowFileModal(false)}
+          title="Select Files"
+        >
+          <FileExplorer
+            onFilesSelected={(files) => {
+              setSelectedFiles(prev => [...prev, ...files]);
               setShowFileModal(false);
-            }
-          }}>
-            <div className="file-modal" onClick={e => e.stopPropagation()}>
-              <div className="modal-header">
-                <h3>Select Files</h3>
-                <button 
-                  className="close-button"
-                  onClick={() => setShowFileModal(false)}
-                >
-                  &times;
-                </button>
-              </div>
-              <FileExplorer
-                onFilesSelected={(files) => {
-                  setSelectedFiles(prev => [...prev, ...files]);
-                }}
-                selectedFiles={selectedFiles}
-                workspace={workspace}
-              />
-            </div>
-          </div>
-        )}
+            }}
+            selectedFiles={selectedFiles}
+            workspace={workspace}
+          />
+        </Modal>
+
+        <button
+          className="preview-files-button"
+          onClick={() => setShowSelectedModal(true)}
+          title={`${selectedFiles.length} files selected`}
+        >
+          📄 {selectedFiles.length}
+        </button>
+
+        <Modal
+          isOpen={showSelectedModal}
+          onClose={() => setShowSelectedModal(false)}
+          title="Selected Files"
+        >
+          <SelectedFiles
+            files={selectedFiles}
+            onRemoveFile={(file) => {
+              setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
+            }}
+          />
+        </Modal>
       </div>
     </div>
   );
