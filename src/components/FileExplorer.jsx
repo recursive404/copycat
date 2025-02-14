@@ -3,34 +3,36 @@ import fuzzysort from 'fuzzysort';
 const { ipcRenderer } = window.require('electron');
 
 const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
-  const [workspaceRoot, setWorkspaceRoot] = useState('');
   const [allFiles, setAllFiles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedSearchResults, setSelectedSearchResults] = useState(new Set());
 
-  const handleSelectWorkspace = async () => {
-    const result = await ipcRenderer.invoke('select-directory');
-    if (result) {
-      setWorkspaceRoot(result.path);
-      setAllFiles(result.files);
-    }
-  };
+  // Load workspace and files when component mounts
+  useEffect(() => {
+    const loadWorkspace = async () => {
+      const workspace = await ipcRenderer.invoke('get-workspace');
+      if (workspace) {
+        setAllFiles(workspace.files);
+        // Show initial results
+        handleSearch('');
+      }
+    };
+    loadWorkspace();
+  }, []);
 
   const handleSearch = useCallback((query) => {
     setSearchQuery(query);
-    if (!query) {
-      setSearchResults([]);
-      return;
-    }
+    
+    const results = query ? 
+      fuzzysort.go(query, allFiles, {
+        key: 'path',
+        limit: 50,
+        threshold: -10000,
+      }).map(result => result.obj) :
+      allFiles.slice(0, 50); // Show first 50 files when no query
 
-    const results = fuzzysort.go(query, allFiles, {
-      key: 'path',
-      limit: 50,
-      threshold: -10000,
-    });
-
-    setSearchResults(results.map(result => result.obj));
+    setSearchResults(results);
   }, [allFiles]);
 
   const toggleFileSelection = (file) => {
@@ -64,42 +66,17 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
     <div className="file-explorer">
       <div className="workspace-info">
         <div className="workspace-header">
-          <span className="workspace-path" title={workspaceRoot}>{workspaceRoot}</span>
-          <input
-            type="file"
-            id="file-input"
-            style={{ display: 'none' }}
-            multiple
-            onChange={async (e) => {
-              const files = Array.from(e.target.files).map(file => ({
-                path: file.path,
-                name: file.name
-              }));
-              const filesWithContent = await Promise.all(
-                files.map(async (file) => {
-                  const content = await ipcRenderer.invoke('read-file', file.path);
-                  return {
-                    ...file,
-                    content
-                  };
-                })
-              );
-              onFilesSelected([...selectedFiles, ...filesWithContent]);
-            }}
-          />
-          <button className="icon-button" onClick={handleSelectWorkspace} title="Change workspace">
-            📁
-          </button>
+          <span className="workspace-path" title="Current Workspace">Current Workspace</span>
         </div>
         <div className="search-box">
-            <input
-              type="text"
-              placeholder="Search files..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Search files..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+          />
         </div>
+      </div>
 
       {searchQuery && (
         <div className="search-results">
