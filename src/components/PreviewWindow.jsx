@@ -36,8 +36,8 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
         <h2>Preview</h2>
       </div>
       <div className="preview-content">
-        {files.map((file) => (
-          <div key={file.path} className="file-preview-item">
+        {files.map((file, index) => (
+          <div key={`${file.path}-${index}`} className="file-preview-item">
             <div
               className="file-preview-header"
               onClick={(e) => {
