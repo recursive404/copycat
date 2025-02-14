@@ -58,9 +58,19 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
                 className="remove-icon"
                 onClick={(e) => {
                   e.stopPropagation();
+                  e.preventDefault();
                   onRemoveFile(file);
                 }}
                 title="Remove file"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onRemoveFile(file);
+                  }
+                }}
               >
                 <FontAwesomeIcon icon={faTrash} size="sm" />
               </div>

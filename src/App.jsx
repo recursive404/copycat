@@ -204,10 +204,30 @@ function App() {
         <div className="full-panel">
           <div className="file-controls">
             <button
-              className="add-files-button"
+              className="control-button"
               onClick={() => setShowFileModal(true)}
             >
               + Add Files
+            </button>
+            <button
+              className="control-button"
+              onClick={() => setSelectedFiles([])}
+            >
+              Clear All
+            </button>
+            <button
+              className="control-button"
+              onClick={async () => {
+                try {
+                  const refreshedFiles = await loadFiles();
+                  setSelectedFiles(refreshedFiles);
+                  toast.success('Files refreshed successfully');
+                } catch (error) {
+                  toast.error('Failed to refresh files');
+                }
+              }}
+            >
+              Refresh Files
             </button>
           </div>
           <PreviewWindow 
