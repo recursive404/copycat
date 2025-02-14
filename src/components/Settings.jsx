@@ -114,7 +114,7 @@ const Settings = ({ settings, onSettingsChange, workspaceRoot, setWorkspaceRoot 
           <div className="workspace-control">
             <input
               type="text"
-              value={workspaceRoot || ''}
+              value={workspaceRoot?.path || workspaceRoot || ''}
               readOnly
               placeholder="No workspace selected"
               style={{ flex: 1 }}
