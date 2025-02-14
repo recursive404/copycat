@@ -12,19 +12,19 @@ import './styles/main.css';
 
 function App() {
 
-  // Load selected files from localStorage or use empty array
+  const [showSettings, setShowSettings] = useState(false);
+  const [showFileModal, setShowFileModal] = useState(false);
+  const [showSelectedModal, setShowSelectedModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState(() => {
     const savedFiles = localStorage.getItem('selectedFiles');
     return savedFiles ? JSON.parse(savedFiles) : [];
   });
-
-  // Save selected files to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
-  }, [selectedFiles]);
   const [previewContent, setPreviewContent] = useState('');
   const [prompt, setPrompt] = useState('');
-  // Load settings from localStorage or use defaults
+  const [workspace, setWorkspace] = useState(() => {
+    const savedWorkspace = localStorage.getItem('workspace');
+    return savedWorkspace ? JSON.parse(savedWorkspace) : null;
+  });
   const [settings, setSettings] = useState(() => {
     const savedSettings = localStorage.getItem('appSettings');
     return savedSettings ? JSON.parse(savedSettings) : {
@@ -135,13 +135,6 @@ function App() {
     }
   }, [settings]);
 
-  const [showSettings, setShowSettings] = useState(false);
-  const [showFileModal, setShowFileModal] = useState(false);
-  const [showSelectedModal, setShowSelectedModal] = useState(false);
-  const [workspace, setWorkspace] = useState(() => {
-    const savedWorkspace = localStorage.getItem('workspace');
-    return savedWorkspace ? JSON.parse(savedWorkspace) : null;
-  });
 
   // Save workspace to localStorage whenever it changes
   useEffect(() => {
