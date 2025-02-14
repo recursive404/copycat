@@ -3,10 +3,11 @@
   justify-content: space-between;
   align-items: center;
   height: 30px;
-  background-color: #2d2d2d;
+  background: linear-gradient(180deg, #2d2d2d 0%, #1e1e1e 100%);
   color: white;
   -webkit-app-region: drag;
   user-select: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .title-bar-drag-area {
@@ -21,6 +22,18 @@
 .title-bar-brand {
   font-weight: bold;
   font-size: 14px;
+  padding: 0 12px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  cursor: default;
+  transition: all 0.2s ease;
+  opacity: 0.9;
+}
+
+.title-bar-brand:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  opacity: 1;
 }
 
 .title-bar-controls {
@@ -38,7 +51,8 @@
   border: none;
   background-color: transparent;
   color: white;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .title-bar-button:hover {
