@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faWindowMinimize, faWindowMaximize, faXmark, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
-import { getCurrentWindow, minimize, maximize, unmaximize, close } from '@electron/remote';
+const { getCurrentWindow } = window.require('@electron/remote');
 import './../styles/titlebar.css';
 
 const TitleBar = () => {
@@ -9,21 +9,21 @@ const TitleBar = () => {
   const win = getCurrentWindow();
 
   const handleMinimize = () => {
-    minimize();
+    win.minimize();
   };
 
   const handleMaximize = () => {
     if (win.isMaximized()) {
-      unmaximize();
+      win.unmaximize();
       setIsMaximized(false);
     } else {
-      maximize();
+      win.maximize();
       setIsMaximized(true);
     }
   };
 
   const handleClose = () => {
-    close();
+    win.close();
   };
 
   return (
