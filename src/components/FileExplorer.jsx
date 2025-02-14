@@ -86,7 +86,7 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
               className={`search-result ${selectedSearchResults.has(file.path) ? 'selected' : ''}`}
               onClick={() => toggleFileSelection(file)}
             >
-              <span>{file.path.replace(workspaceRoot + '/', '')}</span>
+              <span>{file.path}</span>
             </div>
           ))}
           {selectedSearchResults.size > 0 && (
@@ -104,7 +104,7 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
         <div className="file-list">
           {selectedFiles.map((file) => (
             <div key={file.path} className="file-item">
-              <span title={file.path.replace(workspaceRoot + '/', '')}>{file.name}</span>
+              <span title={file.path}>{file.name}</span>
               <button
                 className="icon-button"
                 onClick={() => {

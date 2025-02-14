@@ -169,8 +169,12 @@ function App() {
         </div>
 
         {showFileModal && (
-          <div className="file-modal-overlay">
-            <div className="file-modal">
+          <div className="file-modal-overlay" onClick={(e) => {
+            if (e.target.className === 'file-modal-overlay') {
+              setShowFileModal(false);
+            }
+          }}>
+            <div className="file-modal" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <h3>Select Files</h3>
                 <button 
