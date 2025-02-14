@@ -5,6 +5,7 @@ import FileExplorer from './components/FileExplorer';
 import PreviewWindow from './components/PreviewWindow';
 import PromptInput from './components/PromptInput';
 import Settings from './components/Settings';
+import Modal from './components/Modal';
 import './styles/main.css';
 
 function App() {
