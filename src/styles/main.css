@@ -40,6 +40,7 @@ body::before {
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(var(--blur, 0px));
+  overflow-x: hidden;
 }
 
 /* Settings Panel */
