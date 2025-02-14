@@ -61,10 +61,13 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
       toast.error('Please select a workspace in Settings first');
       return;
     }
+    // Create a Set of existing file paths for faster lookup
+    const existingPaths = new Set(selectedFiles.map(f => f.path));
+    
     const filesToAdd = await Promise.all(
       allFiles
         .filter(file => selectedSearchResults.has(file.path))
-        .filter(file => !selectedFiles.some(existing => existing.path === file.path))
+        .filter(file => !existingPaths.has(file.path))
         .map(async (file) => {
           const content = await ipcRenderer.invoke('read-file', file.path);
           return {
@@ -73,8 +76,16 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
           };
         })
     );
+    
     if (filesToAdd.length > 0) {
-      onFilesSelected([...selectedFiles, ...filesToAdd]);
+      // Create a new array with unique files only
+      const uniqueFiles = [...selectedFiles];
+      filesToAdd.forEach(file => {
+        if (!uniqueFiles.some(f => f.path === file.path)) {
+          uniqueFiles.push(file);
+        }
+      });
+      onFilesSelected(uniqueFiles);
     }
     setSelectedSearchResults(new Set());
     setSearchQuery('');
