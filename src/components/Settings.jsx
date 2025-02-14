@@ -73,13 +73,13 @@ const Settings = ({ settings, onSettingsChange }) => {
           Scroll Speed:
           <input
             type="range"
-            min="0"
+            min="0.1"
             max="10"
             step="0.1"
-            value={settings.scrollSpeed || 0}
+            value={settings.scrollSpeed || 1}
             onChange={(e) => handleChange('scrollSpeed', parseFloat(e.target.value))}
           />
-          {settings.scrollSpeed || 0}x
+          {settings.scrollSpeed || 1}x
         </label>
       </div>
 

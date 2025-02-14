@@ -6,16 +6,35 @@ import Settings from './components/Settings';
 import './styles/main.css';
 
 function App() {
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  // Load selected files from localStorage or use empty array
+  const [selectedFiles, setSelectedFiles] = useState(() => {
+    const savedFiles = localStorage.getItem('selectedFiles');
+    return savedFiles ? JSON.parse(savedFiles) : [];
+  });
+
+  // Save selected files to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
+  }, [selectedFiles]);
   const [previewContent, setPreviewContent] = useState('');
   const [prompt, setPrompt] = useState('');
-  const [settings, setSettings] = useState({
-    backgroundImage: '',
-    opacity: 1,
-    blur: 0,
-    scrollDirection: 'vertical',
-    scrollSpeed: 1
+  // Load settings from localStorage or use defaults
+  const [settings, setSettings] = useState(() => {
+    const savedSettings = localStorage.getItem('appSettings');
+    return savedSettings ? JSON.parse(savedSettings) : {
+      backgroundImage: '',
+      opacity: 1,
+      blur: 0,
+      scrollDirection: 'n',
+      scrollSpeed: 1,
+      backgroundScale: 'cover'
+    };
   });
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('appSettings', JSON.stringify(settings));
+  }, [settings]);
 
   // Update preview content when files change
   useEffect(() => {
