@@ -7,14 +7,12 @@ import PreviewWindow from './components/PreviewWindow';
 import PromptInput from './components/PromptInput';
 import Settings from './components/Settings';
 import Modal from './components/Modal';
-import SelectedFiles from './components/SelectedFiles';
 import './styles/main.css';
 
 function App() {
 
   const [showSettings, setShowSettings] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
-  const [showSelectedModal, setShowSelectedModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState(() => {
     const savedFiles = localStorage.getItem('selectedFiles');
     return savedFiles ? JSON.parse(savedFiles) : [];
@@ -181,20 +179,18 @@ function App() {
         <div className="full-panel">
           <div className="file-controls">
             <button
-              className="preview-files-button"
-              onClick={() => setShowSelectedModal(true)}
-              title={`${selectedFiles.length} files selected`}
-            >
-              📄 {selectedFiles.length}
-            </button>
-            <button
               className="add-files-button"
               onClick={() => setShowFileModal(true)}
             >
               + Add Files
             </button>
           </div>
-          <PreviewWindow content={previewContent} />
+          <PreviewWindow 
+            files={selectedFiles}
+            onRemoveFile={(file) => {
+              setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
+            }}
+          />
           <PromptInput
             value={prompt}
             onChange={setPrompt}
@@ -217,18 +213,6 @@ function App() {
           />
         </Modal>
 
-        <Modal
-          isOpen={showSelectedModal}
-          onClose={() => setShowSelectedModal(false)}
-          title="Selected Files"
-        >
-          <SelectedFiles
-            files={selectedFiles}
-            onRemoveFile={(file) => {
-              setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
-            }}
-          />
-        </Modal>
       </div>
     </div>
   );
