@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { saveFiles } from '../utils/persistence';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -17,6 +18,9 @@ const getLanguage = (filename) => {
 };
 
 const PreviewWindow = ({ files, onRemoveFile }) => {
+  useEffect(() => {
+    saveFiles(files);
+  }, [files]);
   const [collapsedFiles, setCollapsedFiles] = useState(new Set());
 
   const toggleCollapse = (path) => {
