@@ -141,7 +141,14 @@ function App() {
       >
         ⚙️
       </button>
-      {showSettings && <Settings settings={settings} onSettingsChange={setSettings} />}
+      {showSettings && (
+        <Settings
+          settings={settings}
+          onSettingsChange={setSettings}
+          workspaceRoot={workspaceRoot}
+          setWorkspaceRoot={setWorkspaceRoot}
+        />
+      )}
       <div className="main-container">
         <div className="full-panel">
           <PreviewWindow content={previewContent} />

@@ -5,7 +5,9 @@ const Settings = ({ settings, onSettingsChange, workspaceRoot, setWorkspaceRoot 
   const handleSelectWorkspace = async () => {
     const result = await ipcRenderer.invoke('select-directory');
     if (result) {
-      setWorkspaceRoot(result.path);
+      setWorkspaceRoot(result);
+      // Clear selected files when workspace changes
+      ipcRenderer.send('clear-selected-files');
     }
   };
   const handleChange = (key, value) => {
@@ -112,9 +114,10 @@ const Settings = ({ settings, onSettingsChange, workspaceRoot, setWorkspaceRoot 
           <div className="workspace-control">
             <input
               type="text"
-              value={workspaceRoot}
+              value={workspaceRoot || ''}
               readOnly
               placeholder="No workspace selected"
+              style={{ flex: 1 }}
             />
             <button onClick={handleSelectWorkspace}>
               Select Workspace
