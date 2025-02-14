@@ -35,7 +35,10 @@ function App() {
   // Save files whenever they change
   useEffect(() => {
     if (selectedFiles.length > 0) {
-      saveFiles(selectedFiles);
+      const success = saveFiles(selectedFiles);
+      if (!success) {
+        toast.error('Failed to save file list');
+      }
     }
   }, [selectedFiles]);
   const [previewContent, setPreviewContent] = useState('');

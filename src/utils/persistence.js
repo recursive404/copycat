@@ -5,11 +5,14 @@ export const saveFiles = (files) => {
   try {
     const serializedFiles = JSON.stringify(files.map(file => ({
       path: file.path,
-      name: file.name
+      name: file.name,
+      content: file.content // Also save content to avoid unnecessary re-reads
     })));
     localStorage.setItem('selectedFiles', serializedFiles);
+    return true;
   } catch (error) {
     console.error('Error saving files:', error);
+    return false;
   }
 };
 
@@ -21,10 +24,15 @@ export const loadFiles = async () => {
     
     const files = JSON.parse(serializedFiles);
     
-    // Re-fetch content for each file to ensure it's fresh
+    // Only re-fetch content if it's not already in the saved data
     const refreshedFiles = await Promise.all(
       files.map(async (file) => {
         try {
+          // If we have content saved, use it
+          if (file.content) {
+            return file;
+          }
+          // Otherwise fetch fresh content
           const content = await ipcRenderer.invoke('read-file', file.path);
           return { ...file, content };
         } catch (error) {

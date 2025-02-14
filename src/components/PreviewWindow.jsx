@@ -18,9 +18,6 @@ const getLanguage = (filename) => {
 };
 
 const PreviewWindow = ({ files, onRemoveFile }) => {
-  useEffect(() => {
-    saveFiles(files);
-  }, [files]);
   const [collapsedFiles, setCollapsedFiles] = useState(new Set());
 
   const toggleCollapse = (path) => {
