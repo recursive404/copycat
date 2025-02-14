@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TitleBar from './components/TitleBar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FileExplorer from './components/FileExplorer';
@@ -161,6 +162,7 @@ function App() {
 
   return (
     <div className="app" style={{ opacity: settings.opacity }}>
+      <TitleBar />
       <ToastContainer position="top-right" />
       <button
         className="settings-toggle"
