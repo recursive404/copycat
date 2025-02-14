@@ -115,7 +115,6 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
             </div>
           )}
         </div>
-      )}
 
     </div>
   );
