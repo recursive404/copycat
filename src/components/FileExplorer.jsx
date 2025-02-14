@@ -2,29 +2,21 @@ import React, { useState, useEffect, useCallback } from 'react';
 import fuzzysort from 'fuzzysort';
 const { ipcRenderer } = window.require('electron');
 
-const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
+const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
   const [allFiles, setAllFiles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedSearchResults, setSelectedSearchResults] = useState(new Set());
 
-  // Load workspace and files when component mounts
+  // Use workspace from settings
   useEffect(() => {
-    const loadWorkspace = async () => {
-      try {
-        const result = await ipcRenderer.invoke('select-directory');
-        if (result) {
-          setAllFiles(result.files);
-          await ipcRenderer.invoke('set-workspace', result);
-          handleSearch('');
-        }
-      } catch (error) {
-        console.error('Failed to load workspace:', error);
-        setAllFiles([]);
-      }
-    };
-    loadWorkspace();
-  }, []);
+    if (workspace) {
+      setAllFiles(workspace.files);
+      handleSearch('');
+    } else {
+      setAllFiles([]);
+    }
+  }, [workspace]);
 
   const handleSearch = useCallback((query) => {
     setSearchQuery(query);
@@ -51,6 +43,10 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
   };
 
   const addSelectedFiles = async () => {
+    if (!workspace) {
+      toast.error('Please select a workspace in Settings first');
+      return;
+    }
     const filesToAdd = await Promise.all(
       allFiles
         .filter(file => selectedSearchResults.has(file.path))

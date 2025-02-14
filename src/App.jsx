@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import FileExplorer from './components/FileExplorer';
 import PreviewWindow from './components/PreviewWindow';
 import PromptInput from './components/PromptInput';
@@ -137,8 +139,25 @@ function App() {
     }
   }, [workspace]);
 
+  const resetSettings = () => {
+    const defaultSettings = {
+      backgroundImage: '',
+      opacity: 1,
+      blur: 0,
+      scrollDirection: 'n',
+      scrollSpeed: 1,
+      backgroundScale: 'cover'
+    };
+    setSettings(defaultSettings);
+    setWorkspace(null);
+    setSelectedFiles([]);
+    localStorage.clear();
+    toast.success('Settings reset to defaults');
+  };
+
   return (
     <div className="app" style={{ opacity: settings.opacity }}>
+      <ToastContainer position="top-right" />
       <button
         className="settings-toggle"
         onClick={() => setShowSettings(!showSettings)}
@@ -193,6 +212,7 @@ function App() {
                   setSelectedFiles(prev => [...prev, ...files]);
                 }}
                 selectedFiles={selectedFiles}
+                workspace={workspace}
               />
             </div>
           </div>

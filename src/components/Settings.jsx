@@ -125,6 +125,21 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
           </div>
         </label>
       </div>
+
+      <div className="settings-group">
+        <button 
+          onClick={() => {
+            if (window.confirm('Are you sure you want to reset all settings to defaults?')) {
+              localStorage.clear();
+              window.location.reload();
+            }
+          }}
+          className="reset-button"
+          style={{ marginTop: '20px', backgroundColor: '#ff4444' }}
+        >
+          Reset All Settings
+        </button>
+      </div>
     </div>
   );
 };
