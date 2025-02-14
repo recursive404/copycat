@@ -42,6 +42,13 @@ function App() {
     localStorage.setItem('appSettings', JSON.stringify(settings));
   }, [settings]);
 
+  // Add event listener for settings toggle
+  useEffect(() => {
+    const handleSettingsToggle = () => setShowSettings(!showSettings);
+    window.addEventListener('toggle-settings', handleSettingsToggle);
+    return () => window.removeEventListener('toggle-settings', handleSettingsToggle);
+  }, [showSettings]);
+
   // Update preview content when files change
   useEffect(() => {
     const content = selectedFiles
@@ -164,13 +171,6 @@ function App() {
     <div className="app" style={{ opacity: settings.opacity }}>
       <TitleBar />
       <ToastContainer position="top-right" />
-      <button
-        className="settings-toggle"
-        onClick={() => setShowSettings(!showSettings)}
-        title="Toggle Settings"
-      >
-        ⚙️
-      </button>
       <Modal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
