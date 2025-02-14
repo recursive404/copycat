@@ -96,6 +96,7 @@ body::before {
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 
 .full-panel {
@@ -105,6 +106,8 @@ body::before {
   padding: 1rem;
   gap: 1rem;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .file-controls {
@@ -133,7 +136,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 1002; /* Higher than settings panel */
 }
 
 .file-modal {
