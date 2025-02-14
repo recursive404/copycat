@@ -282,7 +282,6 @@ function App() {
             workspace={workspace}
           />
         </Modal>
-
       </div>
     </div>
   );
