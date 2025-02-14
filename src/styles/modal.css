@@ -18,10 +18,25 @@
   border-radius: 8px;
   min-width: 600px;
   max-width: 80vw;
-  max-height: 80vh;
-  overflow-y: auto;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
   position: relative;
   animation: slideIn 0.2s ease-in-out;
+}
+
+.file-explorer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.search-results {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 16px;
+  padding-right: 8px;
 }
 
 .modal-header {

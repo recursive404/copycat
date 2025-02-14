@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import fuzzysort from 'fuzzysort';
 const { ipcRenderer } = window.require('electron');
 
@@ -6,15 +6,22 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
   const [allFiles, setAllFiles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const searchInputRef = useRef(null);
   const [selectedSearchResults, setSelectedSearchResults] = useState(new Set());
 
   // Use workspace from settings
   useEffect(() => {
     if (workspace) {
       setAllFiles(workspace.files);
-      handleSearch('');
+      // Show first 50 files initially
+      setSearchResults(workspace.files.slice(0, 50));
+      // Focus search input
+      if (searchInputRef.current) {
+        searchInputRef.current.focus();
+      }
     } else {
       setAllFiles([]);
+      setSearchResults([]);
     }
   }, [workspace]);
 
@@ -80,16 +87,17 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
         </div>
         <div className="search-box">
           <input
+            ref={searchInputRef}
             type="text"
             placeholder="Search files..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
+            autoFocus
           />
         </div>
       </div>
 
-      {searchQuery && (
-        <div className="search-results">
+      <div className="search-results">
           {searchResults.map((file) => (
             <div
               key={file.path}
