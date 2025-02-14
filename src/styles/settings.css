@@ -1,5 +1,5 @@
 .settings-content {
-  color: #fff;
+  color: var(--text-primary);
   padding: 0 20px;
 }
 

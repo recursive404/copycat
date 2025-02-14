@@ -3,8 +3,8 @@
   justify-content: space-between;
   align-items: center;
   height: 30px;
-  background: linear-gradient(180deg, #2d2d2d 0%, #1e1e1e 100%);
-  color: white;
+  background: var(--primary-bg);
+  color: var(--text-primary);
   -webkit-app-region: drag;
   user-select: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);

@@ -109,7 +109,17 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
           ))}
           {selectedSearchResults.size > 0 && (
             <div className="search-actions">
-              <button onClick={addSelectedFiles}>
+              <button 
+                onClick={addSelectedFiles}
+                style={{
+                  backgroundColor: 'var(--accent)',
+                  color: 'var(--text-primary)',
+                  border: 'none',
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
                 Add {selectedSearchResults.size} file(s)
               </button>
             </div>
