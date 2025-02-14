@@ -52,6 +52,17 @@ app.on('activate', () => {
   }
 });
 
+// Workspace handling
+let currentWorkspace = null;
+
+ipcMain.handle('get-workspace', async () => {
+  return currentWorkspace;
+});
+
+ipcMain.on('set-workspace', (event, workspace) => {
+  currentWorkspace = workspace;
+});
+
 // File handling IPC events
 ipcMain.handle('open-file-dialog', async () => {
   const result = await dialog.showOpenDialog({
