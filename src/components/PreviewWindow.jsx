@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const PreviewWindow = ({ files, onRemoveFile }) => {
   const [collapsedFiles, setCollapsedFiles] = useState(new Set());
@@ -14,32 +16,32 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
   };
 
   return (
-    <div className="preview-window" style={{
-      backgroundColor: 'var(--secondary-bg)',
-      borderRadius: '8px',
-      border: '1px solid var(--border-color)'
-    }}>
+    <div className="preview-window">
       <div className="preview-header">
         <h2>Preview</h2>
       </div>
       <div className="preview-content">
         {files.map((file) => (
-          <div key={file.path} className="file-preview-row">
+          <div key={file.path} className="file-preview-item">
             <div className="file-preview-header">
               <button 
-                className="collapse-button"
+                className="icon-button"
                 onClick={() => toggleCollapse(file.path)}
+                title={collapsedFiles.has(file.path) ? 'Expand' : 'Collapse'}
               >
-                {collapsedFiles.has(file.path) ? '▶' : '▼'}
+                <FontAwesomeIcon 
+                  icon={collapsedFiles.has(file.path) ? faChevronRight : faChevronDown} 
+                  size="sm"
+                />
               </button>
-              <span className="file-name" title={file.path}>{file.name}</span>
-              <button
-                className="remove-button"
+              <h3 className="file-name" title={file.path}>{file.name}</h3>
+              <div 
+                className="remove-icon"
                 onClick={() => onRemoveFile(file)}
                 title="Remove file"
               >
-                🗑️
-              </button>
+                <FontAwesomeIcon icon={faTrash} size="sm" />
+              </div>
             </div>
             {!collapsedFiles.has(file.path) && (
               <div className="file-preview-content">
