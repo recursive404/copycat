@@ -32,10 +32,7 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
 
   return (
     <div className="preview-window">
-      <div className="preview-header">
-        <h2>Preview</h2>
-      </div>
-      <div className="preview-content">
+      <div className="preview-content" style={{ paddingTop: '0.5rem' }}>
         {files.map((file, index) => (
           <div key={`${file.path}-${index}`} className="file-preview-item">
             <div

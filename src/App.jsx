@@ -201,47 +201,45 @@ function App() {
         />
       </Modal>
       <div className="main-container">
-        <div className="full-panel">
-          <div className="file-controls">
-            <button
-              className="control-button"
-              onClick={() => setShowFileModal(true)}
-            >
-              + Add Files
-            </button>
-            <button
-              className="control-button"
-              onClick={() => setSelectedFiles([])}
-            >
-              Clear All
-            </button>
-            <button
-              className="control-button"
-              onClick={async () => {
-                try {
-                  const refreshedFiles = await loadFiles();
-                  setSelectedFiles(refreshedFiles);
-                  toast.success('Files refreshed successfully');
-                } catch (error) {
-                  toast.error('Failed to refresh files');
-                }
-              }}
-            >
-              Refresh Files
-            </button>
-          </div>
-          <PreviewWindow 
-            files={selectedFiles}
-            onRemoveFile={(file) => {
-              setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
+        <div className="file-controls">
+          <button
+            className="control-button"
+            onClick={() => setShowFileModal(true)}
+          >
+            + Add Files
+          </button>
+          <button
+            className="control-button"
+            onClick={() => setSelectedFiles([])}
+          >
+            Clear All
+          </button>
+          <button
+            className="control-button"
+            onClick={async () => {
+              try {
+                const refreshedFiles = await loadFiles();
+                setSelectedFiles(refreshedFiles);
+                toast.success('Files refreshed successfully');
+              } catch (error) {
+                toast.error('Failed to refresh files');
+              }
             }}
-          />
-          <PromptInput
-            value={prompt}
-            onChange={setPrompt}
-            onSubmit={() => {/* TODO */}}
-          />
+          >
+            Refresh
+          </button>
         </div>
+        <PreviewWindow 
+          files={selectedFiles}
+          onRemoveFile={(file) => {
+            setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
+          }}
+        />
+        <PromptInput
+          value={prompt}
+          onChange={setPrompt}
+          onSubmit={() => {/* TODO */}}
+        />
 
         <Modal
           isOpen={showFileModal}

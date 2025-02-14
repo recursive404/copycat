@@ -130,25 +130,28 @@ body::before {
 .file-controls {
   display: flex;
   justify-content: flex-end;
-  padding: 0.5rem 0;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--secondary-bg);
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid var(--border-color);
+  margin: 0.5rem 0.5rem 0 0.5rem;
 }
 
 .control-button {
   background-color: var(--accent);
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
   border: none;
   color: white;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-size: 0.9rem;
+  transition: all 0.2s;
 }
 
 .control-button:hover {
   background-color: var(--accent-hover);
-}
-
-.control-button + .control-button {
-  margin-left: 0.5rem;
+  transform: translateY(-1px);
 }
 
 .file-modal-overlay {
@@ -359,6 +362,7 @@ body::before {
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  margin: 0.5rem;
 }
 
 .preview-window .file-preview-item {
