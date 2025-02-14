@@ -17,7 +17,8 @@ const Modal = ({ isOpen, onClose, children, title }) => {
           maxHeight: '90vh',
           overflow: 'hidden',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          flex: '1 1 auto'
         }}
       >
         <div className="modal-header">

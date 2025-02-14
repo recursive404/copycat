@@ -16,7 +16,12 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
   };
 
   return (
-    <div className="settings-content">
+    <div className="settings-content" style={{ 
+      flex: '1 1 auto',
+      overflowY: 'auto',
+      padding: '0 20px',
+      margin: '0 -20px' // Compensate for container padding
+    }}>
       <div className="settings-group">
         <label>
           Background Image URL:
