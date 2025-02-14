@@ -261,6 +261,19 @@ body::before {
   word-break: break-all;
 }
 
+.search-result.already-added {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.already-added-indicator {
+  font-size: 0.8em;
+  color: #666;
+  margin-left: auto;
+  padding-left: 10px;
+}
+
 .search-actions {
   position: sticky;
   bottom: 0;

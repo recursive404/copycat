@@ -104,10 +104,21 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
           {searchResults.map((file) => (
             <div
               key={file.path}
-              className={`search-result ${selectedSearchResults.has(file.path) ? 'selected' : ''}`}
-              onClick={() => toggleFileSelection(file)}
+              className={`search-result ${
+                selectedSearchResults.has(file.path) ? 'selected' : ''
+              } ${selectedFiles.some(f => f.path === file.path) ? 'already-added' : ''}`}
+              onClick={() => {
+                // Prevent selecting already added files
+                if (!selectedFiles.some(f => f.path === file.path)) {
+                  toggleFileSelection(file);
+                }
+              }}
+              title={selectedFiles.some(f => f.path === file.path) ? 'File already added to preview' : file.path}
             >
               <span>{file.path}</span>
+              {selectedFiles.some(f => f.path === file.path) && (
+                <span className="already-added-indicator">Already added</span>
+              )}
             </div>
           ))}
           {selectedSearchResults.size > 0 && (
