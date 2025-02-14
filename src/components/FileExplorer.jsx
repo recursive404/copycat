@@ -61,32 +61,29 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
       toast.error('Please select a workspace in Settings first');
       return;
     }
-    // Create a Set of existing file paths for faster lookup
-    const existingPaths = new Set(selectedFiles.map(f => f.path));
-    
-    const filesToAdd = await Promise.all(
-      allFiles
-        .filter(file => selectedSearchResults.has(file.path))
-        .filter(file => !existingPaths.has(file.path))
-        .map(async (file) => {
-          const content = await ipcRenderer.invoke('read-file', file.path);
-          return {
-            ...file,
-            content
-          };
-        })
-    );
-    
-    if (filesToAdd.length > 0) {
-      // Create a new array with unique files only
-      const uniqueFiles = [...selectedFiles];
-      filesToAdd.forEach(file => {
-        if (!uniqueFiles.some(f => f.path === file.path)) {
-          uniqueFiles.push(file);
-        }
-      });
-      onFilesSelected(uniqueFiles);
+
+    // Get only the newly selected files that aren't already in selectedFiles
+    const newFilePaths = Array.from(selectedSearchResults)
+      .filter(path => !selectedFiles.some(f => f.path === path));
+
+    if (newFilePaths.length === 0) {
+      setSelectedSearchResults(new Set());
+      setSearchQuery('');
+      return;
     }
+
+    const filesToAdd = await Promise.all(
+      newFilePaths.map(async (path) => {
+        const file = allFiles.find(f => f.path === path);
+        const content = await ipcRenderer.invoke('read-file', path);
+        return {
+          ...file,
+          content
+        };
+      })
+    );
+
+    onFilesSelected([...selectedFiles, ...filesToAdd]);
     setSelectedSearchResults(new Set());
     setSearchQuery('');
   };
