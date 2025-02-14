@@ -16,7 +16,7 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
   };
 
   return (
-    <div className="settings-content" style={{ 
+    <div className="settings-content" style={{
       flex: '1 1 auto',
       overflowY: 'auto',
       padding: '0 20px',
@@ -33,7 +33,7 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
           />
         </label>
       </div>
-      
+
       <div className="settings-group">
         <label>
           App Opacity:
@@ -41,7 +41,7 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
             type="range"
             min="0.1"
             max="1"
-            step="0.1"
+            step="0.01"
             value={settings.opacity || 1}
             onChange={(e) => handleChange('opacity', e.target.value)}
           />
@@ -132,7 +132,7 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
       </div>
 
       <div className="settings-group">
-        <button 
+        <button
           onClick={() => {
             if (window.confirm('Are you sure you want to reset all settings and clear selected files?')) {
               localStorage.clear();
