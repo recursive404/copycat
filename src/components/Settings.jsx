@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/settings.css';
 const { ipcRenderer } = window.require('electron');
 
 const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
@@ -15,8 +16,7 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
   };
 
   return (
-    <div className="settings-panel">
-      <h3>Settings</h3>
+    <div className="settings-content">
       <div className="settings-group">
         <label>
           Background Image URL:

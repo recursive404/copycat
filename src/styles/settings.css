@@ -1,0 +1,64 @@
+.settings-content {
+  color: #fff;
+  padding: 0 20px;
+}
+
+.settings-group {
+  margin-bottom: 20px;
+}
+
+.settings-group label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.settings-group input[type="text"],
+.settings-group input[type="range"],
+.settings-group select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.workspace-control {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.workspace-control input {
+  flex: 1;
+}
+
+.workspace-control button {
+  white-space: nowrap;
+  padding: 8px 16px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.workspace-control button:hover {
+  background: #3a3a3a;
+}
+
+.reset-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.reset-button:hover {
+  background-color: #ff6666 !important;
+}
