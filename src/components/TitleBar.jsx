@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faWindowMinimize, faWindowMaximize, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faWindowMinimize, faWindowMaximize, faXmark, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import { remote } from '@electron/remote';
 import './../styles/titlebar.css';
 
@@ -9,12 +9,16 @@ const TitleBar = () => {
     remote.getCurrentWindow().minimize();
   };
 
+  const [isMaximized, setIsMaximized] = useState(false);
+
   const handleMaximize = () => {
     const win = remote.getCurrentWindow();
     if (win.isMaximized()) {
       win.unmaximize();
+      setIsMaximized(false);
     } else {
       win.maximize();
+      setIsMaximized(true);
     }
   };
 
@@ -32,7 +36,7 @@ const TitleBar = () => {
           <FontAwesomeIcon icon={faWindowMinimize} />
         </button>
         <button className="title-bar-button" onClick={handleMaximize}>
-          <FontAwesomeIcon icon={faWindowMaximize} />
+          <FontAwesomeIcon icon={isMaximized ? faWindowRestore : faWindowMaximize} />
         </button>
         <button className="title-bar-button close" onClick={handleClose}>
           <FontAwesomeIcon icon={faXmark} />
