@@ -10,7 +10,16 @@ const Modal = ({ isOpen, onClose, children, title }) => {
         onClose();
       }
     }}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
+      <div 
+        className="modal-content" 
+        onClick={e => e.stopPropagation()}
+        style={{ 
+          maxHeight: '90vh',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
         <div className="modal-header">
           <h3>{title}</h3>
           <button 
