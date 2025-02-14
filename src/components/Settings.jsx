@@ -1,6 +1,13 @@
 import React from 'react';
+const { ipcRenderer } = window.require('electron');
 
-const Settings = ({ settings, onSettingsChange }) => {
+const Settings = ({ settings, onSettingsChange, workspaceRoot, setWorkspaceRoot }) => {
+  const handleSelectWorkspace = async () => {
+    const result = await ipcRenderer.invoke('select-directory');
+    if (result) {
+      setWorkspaceRoot(result.path);
+    }
+  };
   const handleChange = (key, value) => {
     onSettingsChange({ ...settings, [key]: value });
   };
@@ -96,6 +103,23 @@ const Settings = ({ settings, onSettingsChange }) => {
             <option value="150%">150%</option>
             <option value="200%">200%</option>
           </select>
+        </label>
+      </div>
+
+      <div className="settings-group">
+        <label>
+          Workspace Directory:
+          <div className="workspace-control">
+            <input
+              type="text"
+              value={workspaceRoot}
+              readOnly
+              placeholder="No workspace selected"
+            />
+            <button onClick={handleSelectWorkspace}>
+              Select Workspace
+            </button>
+          </div>
         </label>
       </div>
     </div>

@@ -98,21 +98,29 @@ body::before {
   overflow: hidden;
 }
 
-.right-panel {
+.full-panel {
   display: flex;
   flex-direction: column;
   flex: 1;
   padding: 1rem;
   gap: 1rem;
+  width: 100%;
 }
 
-/* File Explorer */
-.file-explorer {
-  width: 350px;
-  background-color: var(--secondary-bg);
-  border-right: 1px solid var(--border-color);
+/* Workspace Control */
+.workspace-control {
   display: flex;
-  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.workspace-control input {
+  flex: 1;
+  background-color: var(--primary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.5rem;
+  color: var(--text-primary);
 }
 
 .workspace-info {
