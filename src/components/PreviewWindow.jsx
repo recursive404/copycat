@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
-import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
-import css from 'react-syntax-highlighter/dist/esm/languages/prism/css';
-
-// Register languages
-SyntaxHighlighter.registerLanguage('jsx', jsx);
-SyntaxHighlighter.registerLanguage('javascript', javascript);
-SyntaxHighlighter.registerLanguage('css', css);
 
 const getLanguage = (filename) => {
   const ext = filename.split('.').pop().toLowerCase();
