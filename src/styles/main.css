@@ -352,10 +352,28 @@ body::before {
 .preview-window {
   flex: 1;
   background-color: var(--secondary-bg);
-  border-radius: 4px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.preview-window .file-preview-item {
+  margin: 8px 0;
+}
+
+.preview-window .file-preview-header {
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.preview-window .file-preview-content {
+  padding: 8px;
+  border-radius: 0 0 4px 4px;
+  margin-top: 4px;
 }
 
 .preview-header {
