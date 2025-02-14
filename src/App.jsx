@@ -29,10 +29,10 @@ function App() {
   useEffect(() => {
     document.documentElement.style.setProperty('--blur', `${settings.blur}px`);
     document.documentElement.style.setProperty('--opacity', settings.opacity);
-    
+
     if (settings.backgroundImage) {
       document.body.style.setProperty(
-        'background-image', 
+        'background-image',
         `url(${settings.backgroundImage})`
       );
       document.body.style.setProperty(
@@ -95,9 +95,9 @@ function App() {
       document.head.appendChild(style);
 
       // Apply animation to body::before
-      document.body.style.setProperty('--bg-animation', `bgScroll ${duration}s linear infinite`);
+      document.body.style.setProperty('animation', `bgScroll ${duration}s linear infinite`);
     } else {
-      document.body.style.setProperty('--bg-animation', 'none');
+      document.body.style.setProperty('animation', 'none');
     }
   }, [settings]);
 
@@ -105,8 +105,8 @@ function App() {
 
   return (
     <div className="app" style={{ opacity: settings.opacity }}>
-      <button 
-        className="settings-toggle" 
+      <button
+        className="settings-toggle"
         onClick={() => setShowSettings(!showSettings)}
         title="Toggle Settings"
       >
@@ -114,13 +114,13 @@ function App() {
       </button>
       {showSettings && <Settings settings={settings} onSettingsChange={setSettings} />}
       <div className="main-container">
-        <FileExplorer 
-          onFilesSelected={setSelectedFiles} 
+        <FileExplorer
+          onFilesSelected={setSelectedFiles}
           selectedFiles={selectedFiles}
         />
         <div className="right-panel">
           <PreviewWindow content={previewContent} />
-          <PromptInput 
+          <PromptInput
             value={prompt}
             onChange={setPrompt}
             onSubmit={() => {/* TODO */}}
