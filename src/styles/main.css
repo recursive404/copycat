@@ -1,10 +1,11 @@
 :root {
-  --primary-bg: rgba(26, 26, 26, 0.85);
-  --secondary-bg: rgba(45, 45, 45, 0.9);
-  --text-primary: #ffffff;
-  --text-secondary: #b3b3b3;
-  --accent: #646cff;
-  --border-color: rgba(63, 63, 63, 0.8);
+  --primary-bg: #1a1b1e;
+  --secondary-bg: #2c2e33;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --accent: #00ff9d;
+  --border-color: #404040;
+  --hover-bg: #3a3d45;
 }
 
 body {
@@ -39,19 +40,28 @@ body::before {
 }
 
 /* Settings Panel */
-.settings-toggle {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1001;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  font-size: 1.5rem;
+.file-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--secondary-bg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.file-controls button {
+  background: var(--primary-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: var(--secondary-bg);
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.file-controls button:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent);
 }
 
 .settings-panel {
