@@ -201,19 +201,20 @@ function App() {
         />
       </Modal>
       <div className="main-container">
-        <PreviewWindow 
-          files={selectedFiles}
-          onRemoveFile={(file) => {
-            setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
-          }}
-        />
-        <div className="action-area">
-          <PromptInput
-            value={prompt}
-            onChange={setPrompt}
-            onSubmit={() => {/* TODO */}}
+        <div className="content-container">
+          <PreviewWindow 
+            files={selectedFiles}
+            onRemoveFile={(file) => {
+              setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
+            }}
           />
-          <div className="action-buttons">
+          <div className="action-area">
+            <PromptInput
+              value={prompt}
+              onChange={setPrompt}
+              onSubmit={() => {/* TODO */}}
+            />
+            <div className="action-buttons">
             <button
               className="action-button primary"
               onClick={() => setShowFileModal(true)}

@@ -107,6 +107,7 @@ body::before {
 
 .main-container {
   display: flex;
+  flex-direction: column;
   flex: 1;
   overflow: hidden;
   position: relative;
@@ -116,6 +117,13 @@ body::before {
 
 .main-container > * {
   pointer-events: auto; /* Re-enable pointer events for children */
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
 }
 
 .full-panel {
@@ -132,8 +140,9 @@ body::before {
 .action-area {
   padding: 0.5rem;
   background-color: var(--secondary-bg);
-  border-radius: 0 0 8px 8px;
-  margin: 0 0.5rem 0.5rem 0.5rem;
+  border-radius: 8px;
+  margin: 0.5rem;
+  border-top: 1px solid var(--border-color);
 }
 
 .action-buttons {
@@ -390,6 +399,7 @@ body::before {
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   margin: 0.5rem;
+  margin-bottom: 0;
 }
 
 .preview-window .file-preview-item {
