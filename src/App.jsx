@@ -122,6 +122,15 @@ function App() {
   }, [settings]);
 
   const [showSettings, setShowSettings] = useState(false);
+  const [workspaceRoot, setWorkspaceRoot] = useState(() => {
+    const savedWorkspace = localStorage.getItem('workspaceRoot');
+    return savedWorkspace || '';
+  });
+
+  // Save workspace to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('workspaceRoot', workspaceRoot);
+  }, [workspaceRoot]);
 
   return (
     <div className="app" style={{ opacity: settings.opacity }}>
@@ -134,11 +143,7 @@ function App() {
       </button>
       {showSettings && <Settings settings={settings} onSettingsChange={setSettings} />}
       <div className="main-container">
-        <FileExplorer
-          onFilesSelected={setSelectedFiles}
-          selectedFiles={selectedFiles}
-        />
-        <div className="right-panel">
+        <div className="full-panel">
           <PreviewWindow content={previewContent} />
           <PromptInput
             value={prompt}
