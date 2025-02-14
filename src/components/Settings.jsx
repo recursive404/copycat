@@ -134,8 +134,10 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
       <div className="settings-group">
         <button 
           onClick={() => {
-            if (window.confirm('Are you sure you want to reset all settings to defaults?')) {
+            if (window.confirm('Are you sure you want to reset all settings and clear selected files?')) {
               localStorage.clear();
+              setWorkspace(null);
+              onFilesSelected([]);
               window.location.reload();
             }
           }}

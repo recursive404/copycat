@@ -64,6 +64,7 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
     const filesToAdd = await Promise.all(
       allFiles
         .filter(file => selectedSearchResults.has(file.path))
+        .filter(file => !selectedFiles.some(existing => existing.path === file.path))
         .map(async (file) => {
           const content = await ipcRenderer.invoke('read-file', file.path);
           return {
@@ -72,7 +73,9 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
           };
         })
     );
-    onFilesSelected([...selectedFiles, ...filesToAdd]);
+    if (filesToAdd.length > 0) {
+      onFilesSelected([...selectedFiles, ...filesToAdd]);
+    }
     setSelectedSearchResults(new Set());
     setSearchQuery('');
   };

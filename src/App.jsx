@@ -19,11 +19,25 @@ function App() {
   // Load saved files on startup
   useEffect(() => {
     const loadSavedFiles = async () => {
-      const files = await loadFiles();
-      setSelectedFiles(files);
+      try {
+        const files = await loadFiles();
+        if (files && files.length > 0) {
+          setSelectedFiles(files);
+        }
+      } catch (error) {
+        console.error('Error loading saved files:', error);
+        toast.error('Failed to load saved files');
+      }
     };
     loadSavedFiles();
   }, []);
+
+  // Save files whenever they change
+  useEffect(() => {
+    if (selectedFiles.length > 0) {
+      saveFiles(selectedFiles);
+    }
+  }, [selectedFiles]);
   const [previewContent, setPreviewContent] = useState('');
   const [prompt, setPrompt] = useState('');
   const [workspace, setWorkspace] = useState(() => {
