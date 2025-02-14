@@ -455,6 +455,7 @@ body::before {
 
 .preview-content {
   padding: 0;
+  background-color: var(--secondary-bg);
 }
 
 .file-preview-item {
@@ -474,12 +475,13 @@ body::before {
   margin-bottom: 0.5rem;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 4px;
   transition: background-color 0.2s, transform 0.2s;
   position: sticky;
   top: 0;
   background-color: var(--secondary-bg);
   z-index: 10;
+  margin-top: -1rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .file-preview-header:hover {
