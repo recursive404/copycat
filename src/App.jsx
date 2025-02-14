@@ -42,6 +42,7 @@ function App() {
     localStorage.setItem('appSettings', JSON.stringify(settings));
   }, [settings]);
 
+
   // Add event listener for settings toggle
   useEffect(() => {
     const handleSettingsToggle = () => setShowSettings(!showSettings);
