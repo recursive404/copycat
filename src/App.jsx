@@ -123,15 +123,19 @@ function App() {
 
   const [showSettings, setShowSettings] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
-  const [workspaceRoot, setWorkspaceRoot] = useState(() => {
-    const savedWorkspace = localStorage.getItem('workspaceRoot');
-    return savedWorkspace || '';
+  const [workspace, setWorkspace] = useState(() => {
+    const savedWorkspace = localStorage.getItem('workspace');
+    return savedWorkspace ? JSON.parse(savedWorkspace) : null;
   });
 
   // Save workspace to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('workspaceRoot', workspaceRoot);
-  }, [workspaceRoot]);
+    if (workspace) {
+      localStorage.setItem('workspace', JSON.stringify(workspace));
+    } else {
+      localStorage.removeItem('workspace');
+    }
+  }, [workspace]);
 
   return (
     <div className="app" style={{ opacity: settings.opacity }}>
@@ -146,8 +150,8 @@ function App() {
         <Settings
           settings={settings}
           onSettingsChange={setSettings}
-          workspaceRoot={workspaceRoot}
-          setWorkspaceRoot={setWorkspaceRoot}
+          workspace={workspace}
+          setWorkspace={setWorkspace}
         />
       )}
       <div className="main-container">

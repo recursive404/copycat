@@ -71,7 +71,9 @@ const FileExplorer = ({ onFilesSelected, selectedFiles }) => {
     <div className="file-explorer">
       <div className="workspace-info">
         <div className="workspace-header">
-          <span className="workspace-path" title="Current Workspace">Current Workspace</span>
+          <span className="workspace-path" title="Current Workspace">
+            {allFiles.length > 0 ? `Files found: ${allFiles.length}` : 'No workspace selected'}
+          </span>
         </div>
         <div className="search-box">
           <input
