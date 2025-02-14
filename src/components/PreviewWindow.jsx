@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const getLanguage = (filename) => {
   const ext = filename.split('.').pop().toLowerCase();
   const languageMap = {
     'jsx': 'jsx',
     'js': 'javascript',
-    'css': 'css'
+    'css': 'css',
+    'cpp': 'cpp',
+    'h': 'cpp'
   };
   return languageMap[ext] || 'text';
 };
@@ -66,7 +68,7 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
               <div className="file-preview-content">
                 <SyntaxHighlighter
                   language={getLanguage(file.name)}
-                  style={solarizedlight}
+                  style={a11yDark}
                   showLineNumbers
                   lineNumberStyle={{ color: '#999', marginRight: '1em' }}
                   customStyle={{
