@@ -427,7 +427,7 @@ body::before {
 }
 
 .preview-window .file-preview-item {
-  margin: 8px 0;
+  margin: 4px 0;
 }
 
 .preview-window .file-preview-header {
@@ -460,8 +460,9 @@ body::before {
 }
 
 .file-preview-item {
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   position: relative;
+  margin: 4px 0;
 }
 
 .file-preview-header {
