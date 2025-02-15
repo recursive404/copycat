@@ -161,8 +161,9 @@ function App() {
   const previewWindowProps = useMemo(() => ({
     files: selectedFiles,
     onRemoveFile: handleRemoveFile,
-    onSystemPromptsClick: handleSystemPromptsClick
-  }), [selectedFiles, handleRemoveFile, handleSystemPromptsClick]);
+    onSystemPromptsClick: handleSystemPromptsClick,
+    onAddFilesClick: handleAddFiles
+  }), [selectedFiles, handleRemoveFile, handleSystemPromptsClick, handleAddFiles]);
 
   const promptInputProps = useMemo(() => ({
     value: prompt,
