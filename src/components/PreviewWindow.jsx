@@ -143,7 +143,10 @@ const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesCl
 
   return (
     <div className="preview-window">
-      <div className="preview-content" style={{ position: 'relative', overflow: 'hidden' }}>
+      <div className="preview-content" style={{ 
+        position: 'relative',
+        overflowY: files.length > 0 ? 'auto' : 'hidden'
+      }}>
         {files.length > 0 ? (
           files.map((file, index) => (
             <FilePreview

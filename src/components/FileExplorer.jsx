@@ -87,6 +87,10 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
     onFilesSelected([...selectedFiles, ...filesToAdd]);
     setSelectedSearchResults(new Set());
     setSearchQuery('');
+    // Restore focus to search input after adding files
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
   };
 
   return (
