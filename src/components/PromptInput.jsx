@@ -18,7 +18,7 @@ const PromptInput = ({ value, onChange, onSubmit }) => {
       />
       <div className="prompt-actions">
         <button className="primary-action" onClick={onSubmit}>
-          <i className="fas fa-copy"></i> Copy
+          <i className="fas fa-copy"></i>
         </button>
       </div>
     </div>
