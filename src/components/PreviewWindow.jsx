@@ -143,7 +143,7 @@ const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesCl
 
   return (
     <div className="preview-window">
-      <div className="preview-content" style={{ paddingTop: '0.5rem', position: 'relative' }}>
+      <div className="preview-content" style={{ position: 'relative', overflow: 'hidden' }}>
         {files.length > 0 ? (
           files.map((file, index) => (
             <FilePreview
@@ -156,8 +156,8 @@ const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesCl
             />
           ))
         ) : (
-          <div className="empty-preview" onClick={onAddFilesClick}>
-            <div className="empty-preview-content">
+          <div className="empty-preview" onClick={onAddFilesClick} style={{ height: '100%' }}>
+            <div className="empty-preview-content" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
