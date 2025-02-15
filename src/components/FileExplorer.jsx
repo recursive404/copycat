@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import fuzzysort from 'fuzzysort';
+import '../styles/file-explorer.css';
 const { ipcRenderer } = window.require('electron');
 
 const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {

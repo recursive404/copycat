@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { saveFiles } from '../utils/persistence';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import '../styles/preview-window.css';
 import { faChevronDown, faChevronRight, faTrash, faRobot } from '@fortawesome/free-solid-svg-icons';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
