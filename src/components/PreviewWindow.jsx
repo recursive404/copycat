@@ -94,7 +94,7 @@ const FilePreview = React.memo(({
   );
 });
 
-const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick }) => {
+const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesClick }) => {
   const [collapsedFiles, setCollapsedFiles] = useState(new Set());
 
   const toggleCollapse = useCallback((path) => {
@@ -144,16 +144,31 @@ const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick }) => {
   return (
     <div className="preview-window">
       <div className="preview-content" style={{ paddingTop: '0.5rem', position: 'relative' }}>
-        {files.map((file, index) => (
-          <FilePreview
-            key={`${file.path}-${index}`}
-            file={file}
-            isCollapsed={collapsedFiles.has(file.path)}
-            onToggleCollapse={toggleCollapse}
-            onRemove={onRemoveFile}
-            isSticky={stickyHeaders.has(file.path)}
-          />
-        ))}
+        {files.length > 0 ? (
+          files.map((file, index) => (
+            <FilePreview
+              key={`${file.path}-${index}`}
+              file={file}
+              isCollapsed={collapsedFiles.has(file.path)}
+              onToggleCollapse={toggleCollapse}
+              onRemove={onRemoveFile}
+              isSticky={stickyHeaders.has(file.path)}
+            />
+          ))
+        ) : (
+          <div className="empty-preview" onClick={onAddFilesClick}>
+            <div className="empty-preview-content">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" x2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              <h3>No Files Added</h3>
+              <p>Click here to add files to your project</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

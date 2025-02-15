@@ -112,3 +112,40 @@
   font-size: 0.9rem;
   line-height: 1.4;
 }
+.empty-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  cursor: pointer;
+  padding: 2rem;
+  transition: background-color 0.2s ease;
+}
+
+.empty-preview:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.empty-preview-content {
+  text-align: center;
+  color: #666;
+  max-width: 300px;
+}
+
+.empty-preview-content svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+  stroke: #666;
+}
+
+.empty-preview-content h3 {
+  color: #fff;
+  margin: 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.empty-preview-content p {
+  margin: 0;
+  font-size: 0.9rem;
+}
