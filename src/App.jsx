@@ -118,6 +118,26 @@ function App() {
     }
   }, [selectedFiles, prompt, systemPrompts]);
 
+  // Additional callbacks
+  const handleAddFiles = useCallback(() => setShowFileModal(true), []);
+  
+  const handleRefreshFiles = useCallback(async () => {
+    try {
+      const refreshedFiles = await loadFiles(true);
+      setSelectedFiles(refreshedFiles);
+      toast.success('Files refreshed successfully');
+    } catch (error) {
+      toast.error('Failed to refresh files');
+    }
+  }, []);
+
+  const handleClearFiles = useCallback(() => {
+    if (window.confirm('Are you sure you want to clear all files?')) {
+      setSelectedFiles([]);
+      toast.success('All files cleared');
+    }
+  }, []);
+
   // Memoize child components' props
   const previewWindowProps = useMemo(() => ({
     files: selectedFiles,
@@ -130,25 +150,22 @@ function App() {
     onChange: handlePromptChange,
     onSubmit: handleSubmit,
     onSystemPromptsClick: handleSystemPromptsClick,
-    onAddFilesClick: useCallback(() => setShowFileModal(true), []),
-    onRefreshFiles: useCallback(async () => {
-      try {
-        const refreshedFiles = await loadFiles(true);
-        setSelectedFiles(refreshedFiles);
-        toast.success('Files refreshed successfully');
-      } catch (error) {
-        toast.error('Failed to refresh files');
-      }
-    }, []),
-    onClearFiles: useCallback(() => {
-      if (window.confirm('Are you sure you want to clear all files?')) {
-        setSelectedFiles([]);
-        toast.success('All files cleared');
-      }
-    }, []),
+    onAddFilesClick: handleAddFiles,
+    onRefreshFiles: handleRefreshFiles,
+    onClearFiles: handleClearFiles,
     systemPrompts,
     selectedFiles
-  }), [prompt, handlePromptChange, handleSubmit, handleSystemPromptsClick, systemPrompts, selectedFiles]);
+  }), [
+    prompt, 
+    handlePromptChange, 
+    handleSubmit, 
+    handleSystemPromptsClick, 
+    handleAddFiles,
+    handleRefreshFiles,
+    handleClearFiles,
+    systemPrompts, 
+    selectedFiles
+  ]);
 
     // Apply settings to the app
   useEffect(() => {
