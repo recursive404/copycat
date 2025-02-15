@@ -2,7 +2,7 @@
   display: flex;
   gap: 2rem;
   padding: 1rem;
-  background-color: var(--secondary-bg);
+  background-color: transparent;
   border-radius: 4px;
   min-height: 120px;
   width: 98%;
