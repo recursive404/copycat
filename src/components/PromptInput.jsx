@@ -1,11 +1,21 @@
 import React from 'react';
 
 const PromptInput = ({ value, onChange, onSubmit }) => {
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      onSubmit();
+      handleCopy();
     }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(value)
+      .then(() => {
+        onSubmit();
+      })
+      .catch((err) => {
+        console.error('Failed to copy text: ', err);
+      });
   };
 
   return (
@@ -13,10 +23,10 @@ const PromptInput = ({ value, onChange, onSubmit }) => {
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyDown}
         placeholder="Enter your prompt here..."
       />
-      <button onClick={onSubmit}>Copy</button>
+      <button onClick={handleCopy}>Copy</button>
     </div>
   );
 };
