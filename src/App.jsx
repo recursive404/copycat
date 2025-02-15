@@ -83,13 +83,18 @@ function App() {
     return () => window.removeEventListener('toggle-settings', handleSettingsToggle);
   }, [showSettings]);
 
-  // Update preview content when files change
-  useEffect(() => {
-    const content = selectedFiles
+  // Memoize the concatenated file content
+  const concatenatedFileContent = useMemo(() => 
+    selectedFiles
       .map(file => `// ${file.name}\n${file.content}`)
-      .join('\n\n');
-    setPreviewContent(content);
-  }, [selectedFiles]);
+      .join('\n\n'),
+    [selectedFiles]
+  );
+
+  // Update preview content when concatenated content changes
+  useEffect(() => {
+    setPreviewContent(concatenatedFileContent);
+  }, [concatenatedFileContent]);
 
   // Apply settings to the app
   useEffect(() => {
@@ -226,11 +231,11 @@ function App() {
               <PromptInput
                 value={prompt}
                 onChange={setPrompt}
-                systemPrompts={systemPrompts}
-                selectedFiles={selectedFiles}
-                onSystemPromptsClick={() => setShowSystemPrompts(true)}
-                onAddFilesClick={() => setShowFileModal(true)}
-                onRefreshFiles={async () => {
+                systemPrompts={useMemo(() => systemPrompts, [systemPrompts])}
+                selectedFiles={useMemo(() => selectedFiles, [selectedFiles])}
+                onSystemPromptsClick={useCallback(() => setShowSystemPrompts(true), [])}
+                onAddFilesClick={useCallback(() => setShowFileModal(true), [])}
+                onRefreshFiles={useCallback(async () => {
                   try {
                     const refreshedFiles = await loadFiles();
                     setSelectedFiles(refreshedFiles);
@@ -238,25 +243,22 @@ function App() {
                   } catch (error) {
                     toast.error('Failed to refresh files');
                   }
-                }}
-                onClearFiles={() => {
+                }, [])}
+                onClearFiles={useCallback(() => {
                   if (window.confirm('Are you sure you want to clear all files?')) {
                     setSelectedFiles([]);
                     toast.success('All files cleared');
                   }
-                }}
-                onSubmit={async () => {
+                }, [])}
+                onSubmit={useCallback(async () => {
                   try {
-                    const text = selectedFiles
-                      .map(file => `// ${file.name}\n${file.content}`)
-                      .join('\n\n');
-                    const finalText = prompt ? `${text}\n\n${prompt}` : text;
+                    const finalText = prompt ? `${concatenatedFileContent}\n\n${prompt}` : concatenatedFileContent;
                     await navigator.clipboard.writeText(finalText);
                     toast.success('Copied to clipboard');
                   } catch (error) {
                     toast.error('Failed to copy files');
                   }
-                }}
+                }, [concatenatedFileContent, prompt])}
               />
               </div>
             </div>

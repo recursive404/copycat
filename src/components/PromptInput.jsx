@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot, faPlus, faSync, faTrash, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { estimateTokens, formatFileSize, countLines } from '../utils/metrics';
@@ -14,22 +14,42 @@ const PromptInput = ({
   systemPrompts = [],
   selectedFiles = []
 }) => {
-  const metrics = useMemo(() => {
-    const fileContent = selectedFiles
+  const [metrics, setMetrics] = useState({
+    lines: 0,
+    tokens: 0,
+    size: '0 B'
+  });
+
+  // Memoize the concatenated file content
+  const fileContent = useMemo(() => 
+    selectedFiles
       .map(file => `// ${file.name}\n${file.content}`)
-      .join('\n\n');
-    const systemPromptsContent = systemPrompts
+      .join('\n\n'),
+    [selectedFiles]
+  );
+
+  // Memoize the concatenated system prompts
+  const systemPromptsContent = useMemo(() =>
+    systemPrompts
       .filter(p => p.enabled)
       .map(p => p.text)
-      .join('\n');
-    const fullContent = `${systemPromptsContent}\n\n${fileContent}\n\n${value}`;
-    
-    return {
-      lines: countLines(fullContent),
-      tokens: estimateTokens(fullContent),
-      size: formatFileSize(new TextEncoder().encode(fullContent).length)
-    };
-  }, [value, selectedFiles, systemPrompts]);
+      .join('\n'),
+    [systemPrompts]
+  );
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const fullContent = `${systemPromptsContent}\n\n${fileContent}\n\n${value}`;
+      
+      setMetrics({
+        lines: countLines(fullContent),
+        tokens: estimateTokens(fullContent),
+        size: formatFileSize(new TextEncoder().encode(fullContent).length)
+      });
+    }, 800); // Increased debounce delay for smoother experience
+
+    return () => clearTimeout(timer);
+  }, [value, fileContent, systemPromptsContent]);
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();

@@ -555,9 +555,10 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  width: 120px;
+  width: 100px;
   flex-shrink: 0;
   height: 100%;
+  margin-left: 16px;
 }
 
 .system-prompts {
