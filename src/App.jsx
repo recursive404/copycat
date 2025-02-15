@@ -286,7 +286,6 @@ function App() {
         </Modal>
       </div>
     </div>
-  </div>
   );
 }
 
