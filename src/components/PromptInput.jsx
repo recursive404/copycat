@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot, faPlus, faSync, faTrash, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { estimateTokens, formatFileSize, countLines } from '../utils/metrics';
 
 const PromptInput = ({ 
   value, 
@@ -9,8 +10,26 @@ const PromptInput = ({
   onSystemPromptsClick,
   onAddFilesClick,
   onRefreshFiles,
-  onClearFiles 
+  onClearFiles,
+  systemPrompts = [],
+  selectedFiles = []
 }) => {
+  const metrics = useMemo(() => {
+    const fileContent = selectedFiles
+      .map(file => `// ${file.name}\n${file.content}`)
+      .join('\n\n');
+    const systemPromptsContent = systemPrompts
+      .filter(p => p.enabled)
+      .map(p => p.text)
+      .join('\n');
+    const fullContent = `${systemPromptsContent}\n\n${fileContent}\n\n${value}`;
+    
+    return {
+      lines: countLines(fullContent),
+      tokens: estimateTokens(fullContent),
+      size: formatFileSize(new TextEncoder().encode(fullContent).length)
+    };
+  }, [value, selectedFiles, systemPrompts]);
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -60,6 +79,9 @@ const PromptInput = ({
             <FontAwesomeIcon icon={faTrash} />
           </button>
         </div>
+      </div>
+      <div className="prompt-metrics">
+        {metrics.lines} lines • {metrics.tokens} tokens • {metrics.size}
       </div>
     </div>
   );

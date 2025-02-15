@@ -656,6 +656,14 @@ body::before {
   resize: vertical;
 }
 
+.prompt-metrics {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-align: right;
+  padding: 0.25rem 0;
+  margin-top: 0.25rem;
+}
+
 .prompt-actions {
   display: flex;
   flex-direction: column;

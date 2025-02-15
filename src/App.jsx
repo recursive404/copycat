@@ -225,6 +225,8 @@ function App() {
               <PromptInput
                 value={prompt}
                 onChange={setPrompt}
+                systemPrompts={systemPrompts}
+                selectedFiles={selectedFiles}
                 onSystemPromptsClick={() => setShowSystemPrompts(true)}
                 onAddFilesClick={() => setShowFileModal(true)}
                 onRefreshFiles={async () => {
