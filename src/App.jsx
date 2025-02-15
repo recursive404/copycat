@@ -64,8 +64,6 @@ function App() {
       backgroundImage: '',
       opacity: 1,
       blur: 0,
-      scrollDirection: 'n',
-      scrollSpeed: 1,
       backgroundScale: 'cover'
     };
   });
@@ -115,81 +113,18 @@ function App() {
     setPreviewContent(content);
   }, [concatenatedFileContent, prompt, systemPrompts]);
 
-  // Apply settings to the app
+    // Apply settings to the app
   useEffect(() => {
-    document.documentElement.style.setProperty('--blur', `${settings.blur}px`);
-    document.documentElement.style.setProperty('--opacity', settings.opacity);
-
+    const root = document.documentElement;
+    root.style.setProperty('--blur', `${settings.blur}px`);
+    root.style.setProperty('--opacity', settings.opacity);
+    
     if (settings.backgroundImage) {
-      document.body.style.setProperty(
-        'background-image',
-        `url(${settings.backgroundImage})`
-      );
-      document.body.style.setProperty(
-        'background-size',
-        settings.backgroundScale || 'cover'
-      );
+      root.style.setProperty('--bg-image', `url(${settings.backgroundImage})`);
+      root.style.setProperty('--bg-size', settings.backgroundScale || 'cover');
     } else {
-      document.body.style.removeProperty('background-image');
-      document.body.style.removeProperty('background-size');
-    }
-
-    // Apply scroll animation to background
-    const scrollSpeed = parseFloat(settings.scrollSpeed) || 0;
-    const direction = settings.scrollDirection || 'n';
-
-    // Calculate animation properties based on direction and speed
-    let keyframes = '';
-    const duration = 20 / (scrollSpeed || 1); // Base duration inversely proportional to speed
-
-    switch(direction) {
-      case 'n':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 0 100%; } 100% { background-position: 0 0; } }';
-        break;
-      case 's':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }';
-        break;
-      case 'e':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 0 0; } 100% { background-position: 100% 0; } }';
-        break;
-      case 'w':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }';
-        break;
-      case 'ne':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 0 100%; } 100% { background-position: 100% 0; } }';
-        break;
-      case 'nw':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 100% 100%; } 100% { background-position: 0 0; } }';
-        break;
-      case 'se':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 0 0; } 100% { background-position: 100% 100%; } }';
-        break;
-      case 'sw':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 100% 0; } 100% { background-position: 0 100%; } }';
-        break;
-      default:
-        keyframes = '';
-    }
-
-    // Remove existing animation style element
-    const existingStyle = document.getElementById('bg-animation');
-    if (existingStyle) {
-      existingStyle.remove();
-    }
-
-    if (scrollSpeed > 0 && keyframes) {
-      // Add new animation style
-      const style = document.createElement('style');
-      style.id = 'bg-animation';
-      style.textContent = keyframes;
-      document.head.appendChild(style);
-
-      // Apply animation to body::before
-      document.body.style.setProperty('--bg-size', '200%');
-      document.body.style.setProperty('animation', `bgScroll ${duration}s linear infinite`);
-      document.body.style.setProperty('background-repeat', 'repeat');
-    } else {
-      document.body.style.setProperty('animation', 'none');
+      root.style.removeProperty('--bg-image');
+      root.style.setProperty('--bg-size', 'cover');
     }
   }, [settings]);
 
@@ -208,8 +143,6 @@ function App() {
       backgroundImage: '',
       opacity: 1,
       blur: 0,
-      scrollDirection: 'n',
-      scrollSpeed: 1,
       backgroundScale: 'cover'
     };
     setSettings(defaultSettings);
@@ -246,7 +179,6 @@ function App() {
             onSystemPromptsClick={() => setShowSystemPrompts(true)}
           />
           <div className="action-area">
-            <div className="prompt-input">
               <PromptInput
                 value={prompt}
                 onChange={setPrompt}
@@ -300,7 +232,6 @@ function App() {
                   }
                 }, [concatenatedFileContent, prompt, systemPrompts])}
               />
-              </div>
             </div>
         </div>
 

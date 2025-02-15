@@ -1,6 +1,6 @@
 .prompt-input {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   padding: 1rem;
   background-color: var(--secondary-bg);
   border-radius: 4px;
@@ -11,6 +11,7 @@
 .textarea-container {
   position: relative;
   flex: 1;
+  top: -10px;
 }
 
 .textarea-container textarea {
@@ -33,7 +34,6 @@
   color: var(--text-secondary);
   pointer-events: none;
   background-color: var(--primary-bg);
-  padding: 0.25rem 0.5rem;
   border-radius: 4px;
   opacity: 0.8;
 }

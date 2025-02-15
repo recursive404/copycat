@@ -65,40 +65,6 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
 
       <div className="settings-group">
         <label>
-          Scroll Direction:
-          <select
-            value={settings.scrollDirection || 'n'}
-            onChange={(e) => handleChange('scrollDirection', e.target.value)}
-          >
-            <option value="n">North ↑</option>
-            <option value="ne">North-East ↗</option>
-            <option value="e">East →</option>
-            <option value="se">South-East ↘</option>
-            <option value="s">South ↓</option>
-            <option value="sw">South-West ↙</option>
-            <option value="w">West ←</option>
-            <option value="nw">North-West ↖</option>
-          </select>
-        </label>
-      </div>
-
-      <div className="settings-group">
-        <label>
-          Scroll Speed:
-          <input
-            type="range"
-            min="0.1"
-            max="10"
-            step="0.1"
-            value={settings.scrollSpeed || 1}
-            onChange={(e) => handleChange('scrollSpeed', parseFloat(e.target.value))}
-          />
-          {settings.scrollSpeed || 1}x
-        </label>
-      </div>
-
-      <div className="settings-group">
-        <label>
           Background Scale:
           <select
             value={settings.backgroundScale || 'cover'}
