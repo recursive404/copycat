@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/prompt-input.css';
 import { faRobot, faPlus, faSync, faTrash, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { estimateTokens, formatFileSize, countLines } from '../utils/metrics';
 
 const PromptInput = ({ 
-  value, 
-  onChange, 
+  value: propValue, 
+  onChange: propOnChange, 
   onSubmit,
   onSystemPromptsClick,
   onAddFilesClick,
@@ -15,7 +15,25 @@ const PromptInput = ({
   systemPrompts = [],
   selectedFiles = []
 }) => {
+  const [localValue, setLocalValue] = useState(() => {
+    // Get saved prompt from localStorage or use prop value
+    return localStorage.getItem('savedPrompt') || propValue || '';
+  });
   const [metrics, setMetrics] = useState({ lines: 0, tokens: 0, size: '0 B' });
+
+  // Sync local state with props
+  useEffect(() => {
+    if (propValue !== localValue) {
+      setLocalValue(propValue || '');
+    }
+  }, [propValue]);
+
+  // Handle value changes
+  const handleChange = (value) => {
+    setLocalValue(value);
+    localStorage.setItem('savedPrompt', value);
+    propOnChange?.(value);
+  };
   const [isCalculating, setIsCalculating] = useState(false);
 
   // Debounced metrics calculation
@@ -46,7 +64,7 @@ const PromptInput = ({
     }, 1000); // Only update metrics 1 second after last change
 
     return () => clearTimeout(timer);
-  }, [value, selectedFiles, systemPrompts]);
+  }, [localValue, selectedFiles, systemPrompts]);
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -58,8 +76,8 @@ const PromptInput = ({
     <div className="prompt-input">
       <div className="textarea-container">
         <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          value={localValue}
+          onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Enter your prompt here..."
         />
