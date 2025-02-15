@@ -23,8 +23,8 @@ const PromptInput = ({
 
   // Sync local state with props
   useEffect(() => {
-    if (propValue !== localValue) {
-      setLocalValue(propValue || '');
+    if (propValue && propValue !== localValue) {
+      setLocalValue(propValue);
     }
   }, [propValue]);
 
