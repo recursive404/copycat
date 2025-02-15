@@ -241,6 +241,13 @@ function App() {
               <div className="secondary-actions">
                   <button
                     className="action-button"
+                    onClick={() => setSystemPromptsClick(true)}
+                    title="System Prompts"
+                  >
+                    <i className="fas fa-robot"></i>
+                  </button>
+                  <button
+                    className="action-button"
                     onClick={() => setShowFileModal(true)}
                     title="Add Files"
                   >

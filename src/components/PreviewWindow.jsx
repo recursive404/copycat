@@ -93,18 +93,6 @@ const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick }) => {
               <h3 className="file-name" title={file.path}>{file.name}</h3>
               <div className="header-actions">
                 <div
-                  className="action-icon"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSystemPromptsClick();
-                  }}
-                  title="System Prompts"
-                  role="button"
-                  tabIndex={0}
-                >
-                  <FontAwesomeIcon icon={faRobot} size="sm" />
-                </div>
-                <div
                   className="remove-icon"
                   onClick={(e) => {
                     e.stopPropagation();
