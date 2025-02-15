@@ -558,7 +558,7 @@ body::before {
 .prompt-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
   width: 120px;
   flex-shrink: 0;
   height: 100%;
@@ -680,7 +680,7 @@ body::before {
   color: white;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .prompt-actions .primary-action:hover {
@@ -690,9 +690,9 @@ body::before {
 .prompt-actions .secondary-actions {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
+  gap: 0.25rem;
   width: 100%;
-  height: 80px;
+  height: 70px;
 }
 
 .prompt-actions .action-button {
