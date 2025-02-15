@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { loadFiles, saveFiles } from './utils/persistence';
 import TitleBar from './components/TitleBar';
 import { ToastContainer, toast } from 'react-toastify';
@@ -12,6 +12,20 @@ import SystemPrompts from './components/SystemPrompts';
 import './styles/main.css';
 
 function App() {
+  const scrollIntervalRef = useRef(null);
+  const scrollPositionRef = useRef({ x: 0, y: 0 });
+
+  // Define scroll directions
+  const directions = {
+    'right': { x: 1, y: 0 },
+    'left': { x: -1, y: 0 },
+    'up': { x: 0, y: -1 },
+    'down': { x: 0, y: 1 },
+    'diagonal-up-right': { x: 1, y: -1 },
+    'diagonal-up-left': { x: -1, y: -1 },
+    'diagonal-down-right': { x: 1, y: 1 },
+    'diagonal-down-left': { x: -1, y: 1 }
+  };
 
   const [showSettings, setShowSettings] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
@@ -64,7 +78,10 @@ function App() {
       backgroundImage: '',
       opacity: 1,
       blur: 0,
-      backgroundScale: 'cover'
+      backgroundScale: 'cover',
+      backgroundScroll: false,
+      scrollDirection: 'right',
+      scrollSpeed: 5
     };
   });
 
@@ -167,19 +184,52 @@ function App() {
     selectedFiles
   ]);
 
-    // Apply settings to the app
+  // Apply settings to the app
   useEffect(() => {
     const root = document.documentElement;
+    const bg = document.querySelector('.app-background');
+    
     root.style.setProperty('--blur', `${settings.blur}px`);
     root.style.setProperty('--opacity', settings.opacity);
     
     if (settings.backgroundImage) {
-      root.style.setProperty('--bg-image', `url(${settings.backgroundImage})`);
-      root.style.setProperty('--bg-size', settings.backgroundScale || 'cover');
+      bg.style.backgroundImage = `url(${settings.backgroundImage})`;
+      bg.style.backgroundSize = settings.backgroundScale || 'cover';
     } else {
-      root.style.removeProperty('--bg-image');
-      root.style.setProperty('--bg-size', 'cover');
+      bg.style.backgroundImage = 'none';
+      bg.style.backgroundSize = 'cover';
     }
+
+    // Clear existing interval if any
+    if (scrollIntervalRef.current) {
+      clearInterval(scrollIntervalRef.current);
+      scrollIntervalRef.current = null;
+    }
+
+    // Handle background scroll
+    if (settings.backgroundScroll) {
+      const direction = directions[settings.scrollDirection || 'right'];
+      const speed = settings.scrollSpeed || 5;
+      const interval = Math.max(5, 25 - speed * 2); // Map speed 1-10 to interval 23-5ms
+
+      scrollIntervalRef.current = setInterval(() => {
+        scrollPositionRef.current = {
+          x: (scrollPositionRef.current.x || 0) + direction.x,
+          y: (scrollPositionRef.current.y || 0) + direction.y
+        };
+
+        bg.style.backgroundPosition = 
+          `${scrollPositionRef.current.x}px ${scrollPositionRef.current.y}px`;
+      }, interval);
+    }
+
+    // Cleanup interval on unmount or settings change
+    return () => {
+      if (scrollIntervalRef.current) {
+        clearInterval(scrollIntervalRef.current);
+        scrollIntervalRef.current = null;
+      }
+    };
   }, [settings]);
 
 
@@ -197,7 +247,10 @@ function App() {
       backgroundImage: '',
       opacity: 1,
       blur: 0,
-      backgroundScale: 'cover'
+      backgroundScale: 'cover',
+      backgroundScroll: false,
+      scrollDirection: 'right',
+      scrollSpeed: 5
     };
     setSettings(defaultSettings);
     setWorkspace(null);
@@ -207,61 +260,64 @@ function App() {
   };
 
   return (
-    <div className="app" style={{ opacity: settings.opacity }}>
-      <TitleBar />
-      <ToastContainer position="top-right" />
-      <Modal
-        isOpen={showSettings}
-        onClose={() => setShowSettings(false)}
-        title="Settings"
-      >
-        <Settings
-          settings={settings}
-          onSettingsChange={setSettings}
-          workspace={workspace}
-          setWorkspace={setWorkspace}
-          selectedFiles={selectedFiles}
-        />
-      </Modal>
-      <div className="main-container">
-        <div className="content-container">
-          <PreviewWindow {...previewWindowProps} />
-          <div className="action-area">
-            <PromptInput {...promptInputProps} />
-            </div>
-        </div>
-
+    <>
+      <div className="app-background" />
+      <div className="app" style={{ opacity: settings.opacity }}>
+        <TitleBar />
+        <ToastContainer position="top-right" />
         <Modal
-          isOpen={showSystemPrompts}
-          onClose={() => setShowSystemPrompts(false)}
-          title="System Prompts"
+          isOpen={showSettings}
+          onClose={() => setShowSettings(false)}
+          title="Settings"
         >
-          <SystemPrompts
-            prompts={systemPrompts}
-            onPromptsChange={setSystemPrompts}
-          />
-        </Modal>
-
-        <Modal
-          isOpen={showFileModal}
-          onClose={() => setShowFileModal(false)}
-          title="Select Files"
-        >
-          <FileExplorer
-            onFilesSelected={(files) => {
-              // Create a Map using file paths as keys to ensure uniqueness
-              const uniqueFiles = new Map(
-                [...selectedFiles, ...files].map(file => [file.path, file])
-              );
-              setSelectedFiles(Array.from(uniqueFiles.values()));
-              setShowFileModal(false);
-            }}
-            selectedFiles={selectedFiles}
+          <Settings
+            settings={settings}
+            onSettingsChange={setSettings}
             workspace={workspace}
+            setWorkspace={setWorkspace}
+            selectedFiles={selectedFiles}
           />
         </Modal>
+        <div className="main-container">
+          <div className="content-container">
+            <PreviewWindow {...previewWindowProps} />
+            <div className="action-area">
+              <PromptInput {...promptInputProps} />
+            </div>
+          </div>
+
+          <Modal
+            isOpen={showSystemPrompts}
+            onClose={() => setShowSystemPrompts(false)}
+            title="System Prompts"
+          >
+            <SystemPrompts
+              prompts={systemPrompts}
+              onPromptsChange={setSystemPrompts}
+            />
+          </Modal>
+
+          <Modal
+            isOpen={showFileModal}
+            onClose={() => setShowFileModal(false)}
+            title="Select Files"
+          >
+            <FileExplorer
+              onFilesSelected={(files) => {
+                // Create a Map using file paths as keys to ensure uniqueness
+                const uniqueFiles = new Map(
+                  [...selectedFiles, ...files].map(file => [file.path, file])
+                );
+                setSelectedFiles(Array.from(uniqueFiles.values()));
+                setShowFileModal(false);
+              }}
+              selectedFiles={selectedFiles}
+              workspace={workspace}
+            />
+          </Modal>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -65,6 +65,52 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
 
       <div className="settings-group">
         <label>
+          Enable Background Scroll:
+          <input
+            type="checkbox"
+            checked={settings.backgroundScroll || false}
+            onChange={(e) => handleChange('backgroundScroll', e.target.checked)}
+          />
+        </label>
+      </div>
+
+      <div className="settings-group">
+        <label>
+          Scroll Direction:
+          <select
+            value={settings.scrollDirection || 'right'}
+            onChange={(e) => handleChange('scrollDirection', e.target.value)}
+            disabled={!settings.backgroundScroll}
+          >
+            <option value="right">Right</option>
+            <option value="left">Left</option>
+            <option value="up">Up</option>
+            <option value="down">Down</option>
+            <option value="diagonal-up-right">Diagonal Up Right</option>
+            <option value="diagonal-up-left">Diagonal Up Left</option>
+            <option value="diagonal-down-right">Diagonal Down Right</option>
+            <option value="diagonal-down-left">Diagonal Down Left</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="settings-group">
+        <label>
+          Scroll Speed:
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value={settings.scrollSpeed || 5}
+            onChange={(e) => handleChange('scrollSpeed', Number(e.target.value))}
+            disabled={!settings.backgroundScroll}
+          />
+          {settings.scrollSpeed || 5}
+        </label>
+      </div>
+
+      <div className="settings-group">
+        <label>
           Background Scale:
           <select
             value={settings.backgroundScale || 'cover'}
