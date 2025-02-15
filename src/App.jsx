@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { loadFiles, saveFiles } from './utils/persistence';
 import TitleBar from './components/TitleBar';
 import { ToastContainer, toast } from 'react-toastify';
@@ -43,6 +43,16 @@ function App() {
   }, [selectedFiles]);
   const [previewContent, setPreviewContent] = useState('');
   const [prompt, setPrompt] = useState('');
+  const [systemPrompts, setSystemPrompts] = useState(() => {
+    const saved = localStorage.getItem('systemPrompts');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [showSystemPrompts, setShowSystemPrompts] = useState(false);
+
+  // Save system prompts to localStorage
+  useEffect(() => {
+    localStorage.setItem('systemPrompts', JSON.stringify(systemPrompts));
+  }, [systemPrompts]);
   const [workspace, setWorkspace] = useState(() => {
     const savedWorkspace = localStorage.getItem('workspace');
     return savedWorkspace ? JSON.parse(savedWorkspace) : null;
@@ -207,6 +217,7 @@ function App() {
             onRemoveFile={(file) => {
               setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
             }}
+            onSystemPromptsClick={() => setShowSystemPrompts(true)}
           />
           <div className="action-area">
             <div className="prompt-input">
@@ -265,6 +276,17 @@ function App() {
               </div>
             </div>
         </div>
+
+        <Modal
+          isOpen={showSystemPrompts}
+          onClose={() => setShowSystemPrompts(false)}
+          title="System Prompts"
+        >
+          <SystemPrompts
+            prompts={systemPrompts}
+            onPromptsChange={setSystemPrompts}
+          />
+        </Modal>
 
         <Modal
           isOpen={showFileModal}

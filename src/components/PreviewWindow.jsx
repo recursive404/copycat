@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { saveFiles } from '../utils/persistence';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronRight, faTrash, faRobot } from '@fortawesome/free-solid-svg-icons';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -17,7 +17,7 @@ const getLanguage = (filename) => {
   return languageMap[ext] || 'text';
 };
 
-const PreviewWindow = ({ files, onRemoveFile }) => {
+const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick }) => {
   const [collapsedFiles, setCollapsedFiles] = useState(new Set());
 
   const toggleCollapse = (path) => {
@@ -91,25 +91,39 @@ const PreviewWindow = ({ files, onRemoveFile }) => {
                 />
               </div>
               <h3 className="file-name" title={file.path}>{file.name}</h3>
-              <div
-                className="remove-icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  onRemoveFile(file);
-                }}
-                title="Remove file"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+              <div className="header-actions">
+                <div
+                  className="action-icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSystemPromptsClick();
+                  }}
+                  title="System Prompts"
+                  role="button"
+                  tabIndex={0}
+                >
+                  <FontAwesomeIcon icon={faRobot} size="sm" />
+                </div>
+                <div
+                  className="remove-icon"
+                  onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     onRemoveFile(file);
-                  }
-                }}
-              >
-                <FontAwesomeIcon icon={faTrash} size="sm" />
+                  }}
+                  title="Remove file"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onRemoveFile(file);
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrash} size="sm" />
+                </div>
               </div>
             </div>
             {!collapsedFiles.has(file.path) && (

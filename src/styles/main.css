@@ -498,14 +498,22 @@ body::before {
   font-weight: 500;
 }
 
-.remove-icon {
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.header-actions .action-icon,
+.header-actions .remove-icon {
   color: var(--text-secondary);
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 4px;
 }
 
-.remove-icon:hover {
+.header-actions .action-icon:hover,
+.header-actions .remove-icon:hover {
   color: var(--text-primary);
   background-color: var(--hover-bg);
 }
