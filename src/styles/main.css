@@ -541,24 +541,26 @@ body::before {
   background-color: var(--secondary-bg);
   border-radius: 4px;
   min-height: 120px;
+  width: 100%;
 }
 
 .prompt-input textarea {
-  width: 85%;
+  flex: 1;
   min-height: 120px;
   padding: 0.5rem;
   background-color: var(--primary-bg);
   border: 1px solid var(--border-color);
   border-radius: 4px;
   color: var(--text-primary);
-  resize: vertical;
+  resize: none;
 }
 
 .prompt-actions {
-  width: 15%;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 120px;
+  flex-shrink: 0;
 }
 
 .system-prompts {
