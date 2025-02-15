@@ -665,8 +665,8 @@ body::before {
 
 .prompt-metrics {
   position: absolute;
-  bottom: 0.5rem;
-  left: 0.5rem;
+  bottom: 0.25rem;
+  right: 0.25rem;
   font-size: 0.8rem;
   color: var(--text-secondary);
   pointer-events: none;
