@@ -15,16 +15,18 @@ function App() {
   const scrollIntervalRef = useRef(null);
   const scrollPositionRef = useRef({ x: 0, y: 0 });
 
-  // Define scroll directions
-  const directions = {
-    'right': { x: 1, y: 0 },
-    'left': { x: -1, y: 0 },
-    'up': { x: 0, y: -1 },
-    'down': { x: 0, y: 1 },
-    'diagonal-up-right': { x: 1, y: -1 },
-    'diagonal-up-left': { x: -1, y: -1 },
-    'diagonal-down-right': { x: 1, y: 1 },
-    'diagonal-down-left': { x: -1, y: 1 }
+  const getDirections = (speed) => {
+    const multiplier = speed || 5;
+    return {
+      'right': { x: multiplier, y: 0 },
+      'left': { x: -multiplier, y: 0 },
+      'up': { x: 0, y: -multiplier },
+      'down': { x: 0, y: multiplier },
+      'diagonal-up-right': { x: multiplier, y: -multiplier },
+      'diagonal-up-left': { x: -multiplier, y: -multiplier },
+      'diagonal-down-right': { x: multiplier, y: multiplier },
+      'diagonal-down-left': { x: -multiplier, y: multiplier }
+    };
   };
 
   const [showSettings, setShowSettings] = useState(false);
@@ -208,19 +210,17 @@ function App() {
 
     // Handle background scroll
     if (settings.backgroundScroll) {
+      const directions = getDirections(settings.scrollSpeed);
       const direction = directions[settings.scrollDirection || 'right'];
-      const speed = settings.scrollSpeed || 5;
-      const interval = Math.max(5, 25 - speed * 2); // Map speed 1-10 to interval 23-5ms
-
+      
       scrollIntervalRef.current = setInterval(() => {
         scrollPositionRef.current = {
           x: (scrollPositionRef.current.x || 0) + direction.x,
           y: (scrollPositionRef.current.y || 0) + direction.y
         };
-
-        bg.style.backgroundPosition = 
-          `${scrollPositionRef.current.x}px ${scrollPositionRef.current.y}px`;
-      }, interval);
+        
+        bg.style.backgroundPosition = `${scrollPositionRef.current.x}px ${scrollPositionRef.current.y}px`;
+      }, 20);
     }
 
     // Cleanup interval on unmount or settings change
