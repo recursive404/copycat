@@ -221,15 +221,12 @@ function App() {
                     const finalText = prompt ? `${text}\n\n${prompt}` : text;
                     await navigator.clipboard.writeText(finalText);
                     toast.success('Copied to clipboard');
-                    } catch (error) {
-                      toast.error('Failed to copy files');
-                    }
-                  }}
-                  title="Copy All Files"
-                >
-                  <i className="fas fa-copy"></i> Copy
-                </button>
-                <div className="secondary-actions">
+                  } catch (error) {
+                    toast.error('Failed to copy files');
+                  }
+                }}
+              />
+              <div className="secondary-actions">
                   <button
                     className="action-button"
                     onClick={() => setShowFileModal(true)}
