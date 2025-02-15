@@ -48,7 +48,7 @@ const PromptInput = ({
           .map(p => p.text)
           .join('\n\n'),
         // 2. User prompt
-        localValue
+        localValue,
         // 3. Concatenated files
         selectedFiles
           .map(file => `// ${file.name}\n${file.content}`)
