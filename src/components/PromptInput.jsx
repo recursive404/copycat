@@ -39,12 +39,17 @@ const PromptInput = ({
 
   return (
     <div className="prompt-input">
-      <textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Enter your prompt here..."
-      />
+      <div className="textarea-container">
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Enter your prompt here..."
+        />
+        <div className="prompt-metrics">
+          {metrics.lines} lines • {metrics.tokens} tokens • {metrics.size}
+        </div>
+      </div>
       <div className="prompt-actions">
         <button className="primary-action" onClick={onSubmit}>
           <FontAwesomeIcon icon={faCopy} />
@@ -79,9 +84,6 @@ const PromptInput = ({
             <FontAwesomeIcon icon={faTrash} />
           </button>
         </div>
-      </div>
-      <div className="prompt-metrics">
-        {metrics.lines} lines • {metrics.tokens} tokens • {metrics.size}
       </div>
     </div>
   );
