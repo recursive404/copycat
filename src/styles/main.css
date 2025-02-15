@@ -537,7 +537,7 @@ body::before {
   background-color: var(--secondary-bg);
   border-radius: 4px;
   min-height: 120px;
-  width: 100%;
+  width: 98%;
 }
 
 .prompt-input textarea {
@@ -588,7 +588,7 @@ body::before {
 .add-prompt textarea {
   flex: 1;
   min-height: 38px;
-  resize: vertical;
+  resize: none;
   padding: 0.5rem;
   border-radius: 4px;
   background-color: var(--primary-bg);
@@ -660,7 +660,7 @@ body::before {
   border: 1px solid var(--border-color);
   border-radius: 4px;
   color: var(--text-primary);
-  resize: vertical;
+  resize: none;
 }
 
 .prompt-metrics {
