@@ -91,10 +91,29 @@ function App() {
     [selectedFiles]
   );
 
-  // Update preview content when concatenated content changes
+  // Update preview content when relevant content changes
   useEffect(() => {
-    setPreviewContent(concatenatedFileContent);
-  }, [concatenatedFileContent]);
+    let content = '';
+    
+    // 1. Enabled system prompts
+    const enabledSystemPrompts = systemPrompts
+      .filter(p => p.enabled)
+      .map(p => p.text)
+      .join('\n\n');
+    if (enabledSystemPrompts) {
+      content += enabledSystemPrompts + '\n\n';
+    }
+    
+    // 2. User prompt
+    if (prompt) {
+      content += prompt + '\n\n';
+    }
+    
+    // 3. Concatenated files
+    content += concatenatedFileContent;
+    
+    setPreviewContent(content);
+  }, [concatenatedFileContent, prompt, systemPrompts]);
 
   // Apply settings to the app
   useEffect(() => {
@@ -252,13 +271,34 @@ function App() {
                 }, [])}
                 onSubmit={useCallback(async () => {
                   try {
-                    const finalText = prompt ? `${concatenatedFileContent}\n\n${prompt}` : concatenatedFileContent;
+                    // Get enabled system prompts
+                    const enabledSystemPrompts = systemPrompts
+                      .filter(p => p.enabled)
+                      .map(p => p.text)
+                      .join('\n\n');
+                    
+                    // Build final text in desired order
+                    let finalText = '';
+                    
+                    // 1. Enabled system prompts
+                    if (enabledSystemPrompts) {
+                      finalText += enabledSystemPrompts + '\n\n';
+                    }
+                    
+                    // 2. User prompt
+                    if (prompt) {
+                      finalText += prompt + '\n\n';
+                    }
+                    
+                    // 3. Concatenated files
+                    finalText += concatenatedFileContent;
+
                     await navigator.clipboard.writeText(finalText);
                     toast.success('Copied to clipboard');
                   } catch (error) {
                     toast.error('Failed to copy files');
                   }
-                }, [concatenatedFileContent, prompt])}
+                }, [concatenatedFileContent, prompt, systemPrompts])}
               />
               </div>
             </div>
