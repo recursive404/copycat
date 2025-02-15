@@ -225,6 +225,23 @@ function App() {
               <PromptInput
                 value={prompt}
                 onChange={setPrompt}
+                onSystemPromptsClick={() => setShowSystemPrompts(true)}
+                onAddFilesClick={() => setShowFileModal(true)}
+                onRefreshFiles={async () => {
+                  try {
+                    const refreshedFiles = await loadFiles();
+                    setSelectedFiles(refreshedFiles);
+                    toast.success('Files refreshed successfully');
+                  } catch (error) {
+                    toast.error('Failed to refresh files');
+                  }
+                }}
+                onClearFiles={() => {
+                  if (window.confirm('Are you sure you want to clear all files?')) {
+                    setSelectedFiles([]);
+                    toast.success('All files cleared');
+                  }
+                }}
                 onSubmit={async () => {
                   try {
                     const text = selectedFiles
@@ -238,49 +255,6 @@ function App() {
                   }
                 }}
               />
-              <div className="secondary-actions">
-                  <button
-                    className="action-button"
-                    onClick={() => setSystemPromptsClick(true)}
-                    title="System Prompts"
-                  >
-                    <i className="fas fa-robot"></i>
-                  </button>
-                  <button
-                    className="action-button"
-                    onClick={() => setShowFileModal(true)}
-                    title="Add Files"
-                  >
-                    <i className="fas fa-plus"></i>
-                  </button>
-                  <button
-                    className="action-button"
-                    onClick={async () => {
-                      try {
-                        const refreshedFiles = await loadFiles();
-                        setSelectedFiles(refreshedFiles);
-                        toast.success('Files refreshed successfully');
-                      } catch (error) {
-                        toast.error('Failed to refresh files');
-                      }
-                    }}
-                    title="Refresh Files"
-                  >
-                    <i className="fas fa-sync"></i>
-                  </button>
-                  <button
-                    className="action-button danger"
-                    onClick={() => {
-                      if (window.confirm('Are you sure you want to clear all files?')) {
-                        setSelectedFiles([]);
-                        toast.success('All files cleared');
-                      }
-                    }}
-                    title="Clear All Files"
-                  >
-                    <i className="fas fa-trash"></i>
-                  </button>
-                </div>
               </div>
             </div>
         </div>

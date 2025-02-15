@@ -660,12 +660,12 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  width: 150px; /* Fixed width for actions container */
-  flex-shrink: 0; /* Prevent shrinking */
+  width: 150px;
+  flex-shrink: 0;
 }
 
 .prompt-actions .primary-action {
-  flex: 1;
+  height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -676,7 +676,22 @@ body::before {
   color: white;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-bottom: 0.25rem;
+}
+
+.secondary-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.secondary-actions-grid .action-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .prompt-actions .primary-action:hover {
