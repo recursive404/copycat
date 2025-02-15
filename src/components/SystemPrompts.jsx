@@ -49,6 +49,7 @@ const SystemPrompts = ({ prompts, onPromptsChange }) => {
   };
 
   const onDragEnd = (result) => {
+    console.log('Drag ended:', result);
     if (!result.destination) return;
     
     const items = Array.from(prompts);
@@ -57,6 +58,11 @@ const SystemPrompts = ({ prompts, onPromptsChange }) => {
     
     onPromptsChange(items);
   };
+
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    background: isDragging ? "#f0f0f0" : "transparent",
+    ...draggableStyle,
+  });
 
   return (
     <div className="system-prompts">
@@ -83,12 +89,20 @@ const SystemPrompts = ({ prompts, onPromptsChange }) => {
               ref={provided.innerRef}
             >
               {prompts.map((prompt, index) => (
-                <Draggable key={index} draggableId={`prompt-${index}`} index={index}>
+                <Draggable 
+                  key={`prompt-${prompt.text}`} 
+                  draggableId={`prompt-${prompt.text}`} 
+                  index={index}
+                >
                   {(provided) => (
                     <div
                       className="system-prompt-item"
                       ref={provided.innerRef}
                       {...provided.draggableProps}
+                      style={getItemStyle(
+                        provided.isDragging,
+                        provided.draggableProps.style
+                      )}
                     >
                       <div className="drag-handle" {...provided.dragHandleProps}>
                         &#x2630;
