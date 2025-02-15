@@ -120,28 +120,28 @@ function App() {
 
     switch(direction) {
       case 'n':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 50% 100%; } 100% { background-position: 50% 0%; } }';
+        keyframes = '@keyframes bgScroll { from { background-position: 0 0; } to { background-position: 0 -200%; } }';
         break;
       case 's':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 50% 0%; } 100% { background-position: 50% 100%; } }';
+        keyframes = '@keyframes bgScroll { from { background-position: 0 -200%; } to { background-position: 0 0; } }';
         break;
       case 'e':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }';
+        keyframes = '@keyframes bgScroll { from { background-position: 0 0; } to { background-position: 200% 0; } }';
         break;
       case 'w':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }';
+        keyframes = '@keyframes bgScroll { from { background-position: 200% 0; } to { background-position: 0 0; } }';
         break;
       case 'ne':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 0% 100%; } 100% { background-position: 100% 0%; } }';
+        keyframes = '@keyframes bgScroll { from { background-position: 0 0; } to { background-position: 200% -200%; } }';
         break;
       case 'nw':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 100% 100%; } 100% { background-position: 0% 0%; } }';
+        keyframes = '@keyframes bgScroll { from { background-position: 200% 0; } to { background-position: 0 -200%; } }';
         break;
       case 'se':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 0% 0%; } 100% { background-position: 100% 100%; } }';
+        keyframes = '@keyframes bgScroll { from { background-position: 0 -200%; } to { background-position: 200% 0; } }';
         break;
       case 'sw':
-        keyframes = '@keyframes bgScroll { 0% { background-position: 100% 0%; } 100% { background-position: 0% 100%; } }';
+        keyframes = '@keyframes bgScroll { from { background-position: 200% -200%; } to { background-position: 0 0; } }';
         break;
       default:
         keyframes = '';
@@ -161,6 +161,7 @@ function App() {
       document.head.appendChild(style);
 
       // Apply animation to body::before
+      document.body.style.setProperty('--bg-size', '200%');
       document.body.style.setProperty('animation', `bgScroll ${duration}s linear infinite`);
       document.body.style.setProperty('background-repeat', 'repeat');
     } else {
