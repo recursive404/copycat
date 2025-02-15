@@ -8,6 +8,7 @@ import PreviewWindow from './components/PreviewWindow';
 import PromptInput from './components/PromptInput';
 import Settings from './components/Settings';
 import Modal from './components/Modal';
+import SystemPrompts from './components/SystemPrompts';
 import './styles/main.css';
 
 function App() {
