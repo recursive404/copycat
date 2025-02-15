@@ -210,21 +210,17 @@ function App() {
           />
           <div className="action-area">
             <div className="prompt-input">
-              <textarea
+              <PromptInput
                 value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Enter your prompt here..."
-              />
-              <div className="prompt-actions">
-                <button
-                  className="primary-action"
-                  onClick={async () => {
-                    try {
-                      const text = selectedFiles
-                        .map(file => `// ${file.name}\n${file.content}`)
-                        .join('\n\n');
-                      await navigator.clipboard.writeText(text);
-                      toast.success('Copied files to clipboard');
+                onChange={setPrompt}
+                onSubmit={async () => {
+                  try {
+                    const text = selectedFiles
+                      .map(file => `// ${file.name}\n${file.content}`)
+                      .join('\n\n');
+                    const finalText = prompt ? `${text}\n\n${prompt}` : text;
+                    await navigator.clipboard.writeText(finalText);
+                    toast.success('Copied to clipboard');
                     } catch (error) {
                       toast.error('Failed to copy files');
                     }

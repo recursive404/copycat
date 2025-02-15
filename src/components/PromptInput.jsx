@@ -4,18 +4,8 @@ const PromptInput = ({ value, onChange, onSubmit }) => {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleCopy();
+      onSubmit();
     }
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(value)
-      .then(() => {
-        onSubmit();
-      })
-      .catch((err) => {
-        console.error('Failed to copy text: ', err);
-      });
   };
 
   return (
@@ -26,7 +16,11 @@ const PromptInput = ({ value, onChange, onSubmit }) => {
         onKeyDown={handleKeyDown}
         placeholder="Enter your prompt here..."
       />
-      <button onClick={handleCopy}>Copy</button>
+      <div className="prompt-actions">
+        <button className="primary-action" onClick={onSubmit}>
+          <i className="fas fa-copy"></i> Copy
+        </button>
+      </div>
     </div>
   );
 };
