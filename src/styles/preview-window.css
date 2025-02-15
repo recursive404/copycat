@@ -54,7 +54,7 @@
   padding: 0.5rem;
   transition: background-color 0.2s, transform 0.2s;
   position: sticky;
-  top: 0;
+  top: -10px;
   background-color: var(--secondary-bg);
   z-index: 10;
   border-bottom: 1px solid var(--border-color);

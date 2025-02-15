@@ -15,42 +15,7 @@ const PromptInput = ({
   systemPrompts = [],
   selectedFiles = []
 }) => {
-  const [metrics, setMetrics] = useState({
-    lines: 0,
-    tokens: 0,
-    size: '0 B'
-  });
-
-  // Memoize the concatenated file content
-  const fileContent = useMemo(() => 
-    selectedFiles
-      .map(file => `// ${file.name}\n${file.content}`)
-      .join('\n\n'),
-    [selectedFiles]
-  );
-
-  // Memoize the concatenated system prompts
-  const systemPromptsContent = useMemo(() =>
-    systemPrompts
-      .filter(p => p.enabled)
-      .map(p => p.text)
-      .join('\n'),
-    [systemPrompts]
-  );
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const fullContent = `${systemPromptsContent}\n\n${fileContent}\n\n${value}`;
-      
-      setMetrics({
-        lines: countLines(fullContent),
-        tokens: estimateTokens(fullContent),
-        size: formatFileSize(new TextEncoder().encode(fullContent).length)
-      });
-    }, 800); // Increased debounce delay for smoother experience
-
-    return () => clearTimeout(timer);
-  }, [value, fileContent, systemPromptsContent]);
+  // Metrics calculation temporarily disabled
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -67,9 +32,7 @@ const PromptInput = ({
           onKeyDown={handleKeyDown}
           placeholder="Enter your prompt here..."
         />
-        <div className="prompt-metrics">
-          {metrics.lines} lines • {metrics.tokens} tokens • {metrics.size}
-        </div>
+        {/* Metrics display temporarily disabled */}
       </div>
       <div className="prompt-actions">
         <button className="primary-action" onClick={onSubmit}>

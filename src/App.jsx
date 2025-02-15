@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     const loadSavedFiles = async () => {
       try {
-        const files = await loadFiles();
+        const files = await loadFiles(false); // Don't force refresh on initial load
         if (files && files.length > 0) {
           setSelectedFiles(files);
         }
@@ -81,37 +81,74 @@ function App() {
     return () => window.removeEventListener('toggle-settings', handleSettingsToggle);
   }, [showSettings]);
 
-  // Memoize the concatenated file content
-  const concatenatedFileContent = useMemo(() => 
-    selectedFiles
-      .map(file => `// ${file.name}\n${file.content}`)
-      .join('\n\n'),
-    [selectedFiles]
-  );
+  // Memoize handlers and data to prevent unnecessary re-renders
+  const handleRemoveFile = useCallback((file) => {
+    setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
+  }, []);
 
-  // Update preview content when relevant content changes
-  useEffect(() => {
-    let content = '';
-    
-    // 1. Enabled system prompts
-    const enabledSystemPrompts = systemPrompts
-      .filter(p => p.enabled)
-      .map(p => p.text)
-      .join('\n\n');
-    if (enabledSystemPrompts) {
-      content += enabledSystemPrompts + '\n\n';
+  const handleSystemPromptsClick = useCallback(() => {
+    setShowSystemPrompts(true);
+  }, []);
+
+  const handlePromptChange = useCallback((newPrompt) => {
+    setPrompt(newPrompt);
+  }, []);
+
+  const handleSubmit = useCallback(async () => {
+    try {
+      // Build content only when copying
+      const content = [
+        // 1. Enabled system prompts
+        systemPrompts
+          .filter(p => p.enabled)
+          .map(p => p.text)
+          .join('\n\n'),
+        // 2. User prompt
+        prompt,
+        // 3. Concatenated files
+        selectedFiles
+          .map(file => `// ${file.name}\n${file.content}`)
+          .join('\n\n')
+      ].filter(Boolean).join('\n\n');
+
+      await navigator.clipboard.writeText(content);
+      toast.success('Copied to clipboard');
+    } catch (error) {
+      toast.error('Failed to copy files');
     }
-    
-    // 2. User prompt
-    if (prompt) {
-      content += prompt + '\n\n';
-    }
-    
-    // 3. Concatenated files
-    content += concatenatedFileContent;
-    
-    setPreviewContent(content);
-  }, [concatenatedFileContent, prompt, systemPrompts]);
+  }, [selectedFiles, prompt, systemPrompts]);
+
+  // Memoize child components' props
+  const previewWindowProps = useMemo(() => ({
+    files: selectedFiles,
+    onRemoveFile: handleRemoveFile,
+    onSystemPromptsClick: handleSystemPromptsClick
+  }), [selectedFiles, handleRemoveFile, handleSystemPromptsClick]);
+
+  const promptInputProps = useMemo(() => ({
+    value: prompt,
+    onChange: handlePromptChange,
+    onSubmit: handleSubmit,
+    onSystemPromptsClick: handleSystemPromptsClick,
+    onAddFilesClick: useCallback(() => setShowFileModal(true), []),
+    onRefreshFiles: useCallback(async () => {
+      try {
+        const refreshedFiles = await loadFiles(true);
+        setSelectedFiles(refreshedFiles);
+        toast.success('Files refreshed successfully');
+      } catch (error) {
+        toast.error('Failed to refresh files');
+      }
+    }, []),
+    onClearFiles: useCallback(() => {
+      if (window.confirm('Are you sure you want to clear all files?')) {
+        setSelectedFiles([]);
+        toast.success('All files cleared');
+      }
+    }, []),
+    systemPrompts,
+    selectedFiles
+  }), [prompt, handlePromptChange, handleSubmit, handleSystemPromptsClick, systemPrompts, selectedFiles]);
 
     // Apply settings to the app
   useEffect(() => {
@@ -171,67 +208,9 @@ function App() {
       </Modal>
       <div className="main-container">
         <div className="content-container">
-          <PreviewWindow 
-            files={selectedFiles}
-            onRemoveFile={(file) => {
-              setSelectedFiles(prev => prev.filter(f => f.path !== file.path));
-            }}
-            onSystemPromptsClick={() => setShowSystemPrompts(true)}
-          />
+          <PreviewWindow {...previewWindowProps} />
           <div className="action-area">
-              <PromptInput
-                value={prompt}
-                onChange={setPrompt}
-                systemPrompts={useMemo(() => systemPrompts, [systemPrompts])}
-                selectedFiles={useMemo(() => selectedFiles, [selectedFiles])}
-                onSystemPromptsClick={useCallback(() => setShowSystemPrompts(true), [])}
-                onAddFilesClick={useCallback(() => setShowFileModal(true), [])}
-                onRefreshFiles={useCallback(async () => {
-                  try {
-                    const refreshedFiles = await loadFiles();
-                    setSelectedFiles(refreshedFiles);
-                    toast.success('Files refreshed successfully');
-                  } catch (error) {
-                    toast.error('Failed to refresh files');
-                  }
-                }, [])}
-                onClearFiles={useCallback(() => {
-                  if (window.confirm('Are you sure you want to clear all files?')) {
-                    setSelectedFiles([]);
-                    toast.success('All files cleared');
-                  }
-                }, [])}
-                onSubmit={useCallback(async () => {
-                  try {
-                    // Get enabled system prompts
-                    const enabledSystemPrompts = systemPrompts
-                      .filter(p => p.enabled)
-                      .map(p => p.text)
-                      .join('\n\n');
-                    
-                    // Build final text in desired order
-                    let finalText = '';
-                    
-                    // 1. Enabled system prompts
-                    if (enabledSystemPrompts) {
-                      finalText += enabledSystemPrompts + '\n\n';
-                    }
-                    
-                    // 2. User prompt
-                    if (prompt) {
-                      finalText += prompt + '\n\n';
-                    }
-                    
-                    // 3. Concatenated files
-                    finalText += concatenatedFileContent;
-
-                    await navigator.clipboard.writeText(finalText);
-                    toast.success('Copied to clipboard');
-                  } catch (error) {
-                    toast.error('Failed to copy files');
-                  }
-                }, [concatenatedFileContent, prompt, systemPrompts])}
-              />
+            <PromptInput {...promptInputProps} />
             </div>
         </div>
 

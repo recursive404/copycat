@@ -22,24 +22,22 @@ export const saveFiles = (files) => {
 };
 
 // Load files from localStorage
-export const loadFiles = async () => {
+export const loadFiles = async (forceRefresh = false) => {
   try {
     const serializedFiles = localStorage.getItem('selectedFiles');
     if (!serializedFiles) return [];
     
     const files = JSON.parse(serializedFiles);
     
-    // Only re-fetch content if it's not already in the saved data
     const refreshedFiles = await Promise.all(
       files.map(async (file) => {
         try {
-          // If we have content saved, use it
-          if (file.content) {
-            return file;
+          // Only fetch from disk if forcing refresh or no content exists
+          if (forceRefresh || !file.content) {
+            const content = await ipcRenderer.invoke('read-file', file.path);
+            return { ...file, content };
           }
-          // Otherwise fetch fresh content
-          const content = await ipcRenderer.invoke('read-file', file.path);
-          return { ...file, content };
+          return file;
         } catch (error) {
           console.error(`Error loading file ${file.path}:`, error);
           return null;

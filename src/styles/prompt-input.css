@@ -36,6 +36,12 @@
   background-color: var(--primary-bg);
   border-radius: 4px;
   opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.prompt-metrics .calculating {
+  opacity: 0.6;
+  font-style: italic;
 }
 
 .prompt-actions {
