@@ -120,28 +120,28 @@ function App() {
 
     switch(direction) {
       case 'n':
-        keyframes = '@keyframes bgScroll { from { background-position: 0 0; } to { background-position: 0 -200%; } }';
+        keyframes = '@keyframes bgScroll { 0% { background-position: 0 100%; } 100% { background-position: 0 0; } }';
         break;
       case 's':
-        keyframes = '@keyframes bgScroll { from { background-position: 0 -200%; } to { background-position: 0 0; } }';
+        keyframes = '@keyframes bgScroll { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }';
         break;
       case 'e':
-        keyframes = '@keyframes bgScroll { from { background-position: 0 0; } to { background-position: 200% 0; } }';
+        keyframes = '@keyframes bgScroll { 0% { background-position: 0 0; } 100% { background-position: 100% 0; } }';
         break;
       case 'w':
-        keyframes = '@keyframes bgScroll { from { background-position: 200% 0; } to { background-position: 0 0; } }';
+        keyframes = '@keyframes bgScroll { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }';
         break;
       case 'ne':
-        keyframes = '@keyframes bgScroll { from { background-position: 0 0; } to { background-position: 200% -200%; } }';
+        keyframes = '@keyframes bgScroll { 0% { background-position: 0 100%; } 100% { background-position: 100% 0; } }';
         break;
       case 'nw':
-        keyframes = '@keyframes bgScroll { from { background-position: 200% 0; } to { background-position: 0 -200%; } }';
+        keyframes = '@keyframes bgScroll { 0% { background-position: 100% 100%; } 100% { background-position: 0 0; } }';
         break;
       case 'se':
-        keyframes = '@keyframes bgScroll { from { background-position: 0 -200%; } to { background-position: 200% 0; } }';
+        keyframes = '@keyframes bgScroll { 0% { background-position: 0 0; } 100% { background-position: 100% 100%; } }';
         break;
       case 'sw':
-        keyframes = '@keyframes bgScroll { from { background-position: 200% -200%; } to { background-position: 0 0; } }';
+        keyframes = '@keyframes bgScroll { 0% { background-position: 100% 0; } 100% { background-position: 0 100%; } }';
         break;
       default:
         keyframes = '';
