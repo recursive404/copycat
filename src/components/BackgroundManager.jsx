@@ -6,6 +6,7 @@ const BackgroundManager = ({ images, onChange = () => {}, sets = [], onSetsChang
   const [previewPosition, setPreviewPosition] = useState({ x: 0, y: 0 });
   const [newSetName, setNewSetName] = useState('');
   const [showNewSetInput, setShowNewSetInput] = useState(false);
+  const [expandedSets, setExpandedSets] = useState({});
 
   // Initialize sets with image enable states if they don't exist
   useEffect(() => {
@@ -115,11 +116,18 @@ const BackgroundManager = ({ images, onChange = () => {}, sets = [], onSetsChang
       onSetsChange(updatedSets);
       setNewSetName('');
       setShowNewSetInput(false);
+      // Expand the newly added set
+      setExpandedSets(prev => ({ ...prev, [newSet.id]: true }));
     }
   };
 
   const handleRemoveSet = (setId) => {
     onSetsChange(sets.filter(s => s.id !== setId));
+    // Remove the expanded state for the removed set
+    setExpandedSets(prev => {
+      const { [setId]: _, ...rest } = prev;
+      return rest;
+    });
   };
 
   const handleToggleSet = (setId) => {
@@ -142,6 +150,13 @@ const BackgroundManager = ({ images, onChange = () => {}, sets = [], onSetsChang
       .map(img => img.url)
       .filter(Boolean);
     onChange(enabledImages);
+  };
+
+  const toggleSetExpansion = (setId) => {
+    setExpandedSets(prev => ({
+      ...prev,
+      [setId]: !prev[setId]
+    }));
   };
 
   return (
@@ -178,68 +193,81 @@ const BackgroundManager = ({ images, onChange = () => {}, sets = [], onSetsChang
         {/* Image Sets */}
         {sets.map(set => (
           <div key={set.id} className="bg-manager-set">
-            <div className="bg-manager-set-header">
+            <div className="bg-manager-set-header" onClick={() => toggleSetExpansion(set.id)}>
               <div className="bg-manager-set-info">
                 <label className="bg-manager-set-toggle">
                   <input
                     type="checkbox"
                     checked={set.enabled}
-                    onChange={() => handleToggleSet(set.id)}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      handleToggleSet(set.id);
+                    }}
+                    className="toggle-switch"
                   />
+                  <span className="toggle-slider"></span>
                 </label>
                 <span className="bg-manager-set-name">{set.name}</span>
                 <button
-                  onClick={() => handleRemoveSet(set.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveSet(set.id);
+                  }}
                   className="bg-manager-remove-set-button"
                   title="Remove set"
                 >
                   ×
                 </button>
+                <span className={`expand-icon ${expandedSets[set.id] ? 'expanded' : ''}`}>▼</span>
               </div>
             </div>
-            <div className="bg-manager-images-list">
-              {set.images.map((img, index) => (
-                <div key={index} className="bg-manager-image-item">
-                  <label className="bg-manager-image-toggle">
+            {expandedSets[set.id] && (
+              <div className="bg-manager-images-list">
+                {set.images.map((img, index) => (
+                  <div key={index} className="bg-manager-image-item">
+                    <label className="bg-manager-image-toggle">
+                      <input
+                        type="checkbox"
+                        checked={img.enabled}
+                        onChange={() => handleToggleImage(set.id, index)}
+                        className="toggle-switch"
+                      />
+                      <span className="toggle-slider"></span>
+                    </label>
                     <input
-                      type="checkbox"
-                      checked={img.enabled}
-                      onChange={() => handleToggleImage(set.id, index)}
+                      type="text"
+                      value={img.url}
+                      onChange={(e) => handleUpdateImage(set.id, index, e.target.value)}
+                      placeholder="Enter image URL..."
+                      className="bg-manager-image-url-input"
                     />
-                  </label>
-                  <input
-                    type="text"
-                    value={img.url}
-                    onChange={(e) => handleUpdateImage(set.id, index, e.target.value)}
-                    placeholder="Enter image URL..."
-                    className="bg-manager-image-url-input"
-                  />
-                  {img.url && (
+                    {img.url && (
+                      <button
+                        className="bg-manager-preview-button"
+                        onMouseEnter={(e) => handleMouseEnter(img.url, e)}
+                        onMouseLeave={handleMouseLeave}
+                        title="Preview image"
+                      >
+                        👁
+                      </button>
+                    )}
                     <button
-                      className="bg-manager-preview-button"
-                      onMouseEnter={(e) => handleMouseEnter(img.url, e)}
-                      onMouseLeave={handleMouseLeave}
-                      title="Preview image"
+                      onClick={() => handleRemoveImage(set.id, index)}
+                      className="bg-manager-remove-image-button"
+                      title="Remove image"
                     >
-                      👁
+                      ×
                     </button>
-                  )}
-                  <button
-                    onClick={() => handleRemoveImage(set.id, index)}
-                    className="bg-manager-remove-image-button"
-                    title="Remove image"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-              <button
-                onClick={() => handleAddImage(set.id)}
-                className="bg-manager-add-image-button"
-              >
-                Add Image
-              </button>
-            </div>
+                  </div>
+                ))}
+                <button
+                  onClick={() => handleAddImage(set.id)}
+                  className="bg-manager-add-image-button"
+                >
+                  Add Image
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>

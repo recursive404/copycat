@@ -94,31 +94,75 @@
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 12px;
+  overflow: hidden;
 }
 
 .bg-manager .bg-manager-set-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.bg-manager .bg-manager-set-header:hover {
+  background: var(--background-hover);
 }
 
 .bg-manager .bg-manager-set-info {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex: 1;
   width: 100%;
 }
 
-.bg-manager .bg-manager-set-toggle {
-  display: flex;
-  align-items: center;
+/* Toggle Switch Styles */
+.bg-manager .bg-manager-set-toggle,
+.bg-manager .bg-manager-image-toggle {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
 }
 
-.bg-manager .bg-manager-set-toggle input[type="checkbox"] {
-  margin: 0;
+.bg-manager .toggle-switch {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.bg-manager .toggle-slider {
+  position: absolute;
   cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--background-lighter);
+  transition: .4s;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.bg-manager .toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--text-primary);
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.bg-manager .toggle-switch:checked + .toggle-slider {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.bg-manager .toggle-switch:checked + .toggle-slider:before {
+  transform: translateX(16px);
+  background-color: white;
 }
 
 .bg-manager .bg-manager-set-name {
@@ -143,10 +187,22 @@
   background: rgba(255, 68, 68, 0.1);
 }
 
+.bg-manager .expand-icon {
+  font-size: 0.8em;
+  color: var(--text-secondary);
+  transition: transform 0.3s ease;
+}
+
+.bg-manager .expand-icon.expanded {
+  transform: rotate(180deg);
+}
+
 .bg-manager .bg-manager-images-list {
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  border-top: 1px solid var(--border);
 }
 
 .bg-manager .bg-manager-image-item {
@@ -157,19 +213,6 @@
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: 4px;
-}
-
-.bg-manager .bg-manager-image-toggle {
-  display: flex;
-  align-items: center;
-  min-width: 24px;
-}
-
-.bg-manager .bg-manager-image-toggle input[type="checkbox"] {
-  margin: 0;
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
 }
 
 .bg-manager .bg-manager-image-url-input {
