@@ -118,6 +118,16 @@
   background-color: var(--accent);
 }
 
+.search-result.focused {
+  border: 2px solid var(--accent);
+  background-color: var(--primary-bg);
+}
+
+.search-result.focused.selected {
+  border: 2px solid var(--accent);
+  background-color: var(--accent);
+}
+
 .search-result span {
   font-size: 0.9rem;
   word-break: break-all;

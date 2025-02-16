@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 import '../styles/settings.css';
 const { ipcRenderer } = window.require('electron');
 
@@ -139,6 +140,22 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
             <button onClick={handleSelectWorkspace}>
               Select Workspace
             </button>
+            {workspace && (
+              <button 
+                onClick={async () => {
+                  const refreshed = await ipcRenderer.invoke('refresh-workspace', workspace.path);
+                  if (refreshed) {
+                    setWorkspace(refreshed);
+                    toast.success('Workspace files refreshed');
+                  } else {
+                    toast.error('Failed to refresh workspace files');
+                  }
+                }}
+                style={{ marginLeft: '8px' }}
+              >
+                Refresh Files
+              </button>
+            )}
           </div>
         </label>
       </div>

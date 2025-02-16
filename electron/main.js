@@ -151,3 +151,23 @@ ipcMain.handle('select-directory', async () => {
   }
   return null;
 });
+
+// Add handler to refresh workspace files
+ipcMain.handle('refresh-workspace', async (event, workspacePath) => {
+  if (!workspacePath) return null;
+  try {
+    const files = await getAllFiles(workspacePath);
+    return {
+      path: workspacePath,
+      files: files
+    };
+  } catch (error) {
+    console.error('Error refreshing workspace:', error);
+    return null;
+  }
+});
+
+// Register clear-selected-files handler
+ipcMain.on('clear-selected-files', () => {
+  // This is just a placeholder since the actual clearing is handled in the renderer
+});
