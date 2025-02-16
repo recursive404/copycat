@@ -1,6 +1,6 @@
 .preview-window {
   flex: 1;
-  background-color: var(--secondary-bg);
+  background-color: rgba(38, 38, 38, 0.8);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -36,7 +36,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 0;
-  background-color: var(--secondary-bg);
+  background-color: transparent;
 }
 
 .file-preview-item {
@@ -55,9 +55,17 @@
   transition: background-color 0.2s, transform 0.2s;
   position: sticky;
   top: -10px;
-  background-color: var(--secondary-bg);
+  background-color: transparent;
   z-index: 10;
   border-bottom: 1px solid var(--border-color);
+}
+
+/* Make header background solid when sticky */
+.file-preview-item[style*="padding-top: 3rem"] .file-preview-header {
+  background-color: var(--secondary-bg);
+  border-bottom: 1px solid var(--border-color);
+  margin-top: -0.5rem;
+  padding-top: 1rem;
 }
 
 .file-preview-header:hover {
@@ -101,7 +109,7 @@
 .file-preview-content {
   margin-top: 0.5rem;
   padding: 0.5rem;
-  background-color: var(--primary-bg);
+  background-color: rgba(26, 26, 26, 0.8);
   border-radius: 4px;
 }
 

@@ -13,7 +13,8 @@ const PromptInput = ({
   onRefreshFiles,
   onClearFiles,
   systemPrompts = [],
-  selectedFiles = []
+  selectedFiles = [],
+  style
 }) => {
   const [localValue, setLocalValue] = useState(() => {
     // Get saved prompt from localStorage or use prop value
@@ -73,7 +74,7 @@ const PromptInput = ({
   };
 
   return (
-    <div className="prompt-input">
+    <div className="prompt-input" style={style}>
       <div className="textarea-container">
         <textarea
           value={localValue}

@@ -37,16 +37,31 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
 
       <div className="settings-group">
         <label>
-          App Opacity:
+          Preview Window Opacity:
           <input
             type="range"
             min="0.1"
             max="1"
             step="0.01"
-            value={settings.opacity || 1}
-            onChange={(e) => handleChange('opacity', e.target.value)}
+            value={settings.previewOpacity || 1}
+            onChange={(e) => handleChange('previewOpacity', e.target.value)}
           />
-          {settings.opacity || 1}
+          {settings.previewOpacity || 1}
+        </label>
+      </div>
+
+      <div className="settings-group">
+        <label>
+          Prompt Input Opacity:
+          <input
+            type="range"
+            min="0.1"
+            max="1"
+            step="0.01"
+            value={settings.promptOpacity || 1}
+            onChange={(e) => handleChange('promptOpacity', e.target.value)}
+          />
+          {settings.promptOpacity || 1}
         </label>
       </div>
 

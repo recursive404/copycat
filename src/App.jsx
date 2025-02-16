@@ -78,7 +78,8 @@ function App() {
     const savedSettings = localStorage.getItem('appSettings');
     return savedSettings ? JSON.parse(savedSettings) : {
       backgroundImage: '',
-      opacity: 1,
+      previewOpacity: 1,
+      promptOpacity: 1,
       blur: 0,
       backgroundScale: 'cover',
       backgroundScroll: false,
@@ -193,7 +194,8 @@ function App() {
     const bg = document.querySelector('.app-background');
     
     root.style.setProperty('--blur', `${settings.blur}px`);
-    root.style.setProperty('--opacity', settings.opacity);
+    root.style.setProperty('--preview-opacity', settings.previewOpacity);
+    root.style.setProperty('--prompt-opacity', settings.promptOpacity);
     
     if (settings.backgroundImage) {
       bg.style.backgroundImage = `url(${settings.backgroundImage})`;
@@ -246,7 +248,8 @@ function App() {
   const resetSettings = () => {
     const defaultSettings = {
       backgroundImage: '',
-      opacity: 1,
+      previewOpacity: 1,
+      promptOpacity: 1,
       blur: 0,
       backgroundScale: 'cover',
       backgroundScroll: false,
@@ -263,13 +266,17 @@ function App() {
   return (
     <>
       <div className="app-background" />
-      <div className="app" style={{ opacity: settings.opacity }}>
+      <div className="app">
         <TitleBar />
-        <ToastContainer position="top-right" />
+        <ToastContainer 
+          position="top-center" 
+          style={{ marginTop: '2.5rem' }} // Add space below title bar
+          pauseOnFocusLoss={false} // Continue auto-close even when window loses focus
+        />
         <div className="main-container">
           <div className="content-container">
-            <PreviewWindow {...previewWindowProps} />
-            <div className="action-area">
+            <PreviewWindow {...previewWindowProps} style={{ opacity: settings.previewOpacity }} />
+            <div className="action-area" style={{ opacity: settings.promptOpacity }}>
               <PromptInput {...promptInputProps} />
             </div>
           </div>

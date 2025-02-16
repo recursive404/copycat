@@ -82,7 +82,7 @@ body {
 
 .action-area {
   padding: 0.5rem;
-  background-color: var(--secondary-bg);
+  background-color: rgba(38, 38, 38, 0.8);
   border-radius: 8px;
   margin: 0.5rem;
   border-top: 1px solid var(--border-color);

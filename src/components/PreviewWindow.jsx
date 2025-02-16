@@ -94,7 +94,7 @@ const FilePreview = React.memo(({
   );
 });
 
-const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesClick }) => {
+const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesClick, style }) => {
   const [collapsedFiles, setCollapsedFiles] = useState(new Set());
 
   const toggleCollapse = useCallback((path) => {
@@ -142,7 +142,7 @@ const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesCl
   }, []);
 
   return (
-    <div className="preview-window">
+    <div className="preview-window" style={style}>
       <div className="preview-content" style={{ 
         position: 'relative',
         overflowY: files.length > 0 ? 'auto' : 'hidden'
