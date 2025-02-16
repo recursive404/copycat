@@ -16,7 +16,7 @@ function App() {
   const scrollPositionRef = useRef({ x: 0, y: 0 });
 
   const getDirections = (speed) => {
-    const multiplier = speed || 5;
+    const multiplier = (speed || 5) / 3;
     return {
       'right': { x: multiplier, y: 0 },
       'left': { x: -multiplier, y: 0 },

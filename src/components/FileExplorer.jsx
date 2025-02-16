@@ -31,11 +31,22 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
             try {
               const refreshed = await ipcRenderer.invoke('refresh-workspace', ws.path);
               // Add workspace info to each file
-              return (refreshed?.files || []).map(file => ({
-                ...file,
-                workspaceLabel: ws.label,
-                relativePath: file.path.replace(ws.path + '/', '')
-              }));
+              return (refreshed?.files || []).map(file => {
+                // Normalize paths to use forward slashes
+                const normalizedFilePath = file.path.replace(/\\/g, '/');
+                const normalizedWorkspacePath = ws.path.replace(/\\/g, '/');
+                
+                // Remove workspace path and any leading slashes
+                const relativePath = normalizedFilePath
+                  .replace(normalizedWorkspacePath, '')
+                  .replace(/^[/\\]+/, '');
+
+                return {
+                  ...file,
+                  workspaceLabel: ws.label,
+                  relativePath
+                };
+              });
             } catch (error) {
               console.error(`Error fetching files for workspace ${ws.path}:`, error);
               return [];
@@ -94,7 +105,7 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
     
     const results = query ? 
       fuzzysort.go(query, allFiles, {
-        key: 'path',
+        key: 'relativePath',
         limit: 50,
         threshold: -10000,
       }).map(result => result.obj) :
@@ -112,13 +123,13 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
   }, [allFiles, handleSearch]);
 
   const toggleFileSelection = (file) => {
-    if (selectedFiles.some(f => f.path === file.path)) return; // Prevent selecting already added files
+    if (selectedFiles.some(f => f.relativePath === file.relativePath)) return; // Prevent selecting already added files
     
     const newSelected = new Set(selectedSearchResults);
-    if (newSelected.has(file.path)) {
-      newSelected.delete(file.path);
+    if (newSelected.has(file.relativePath)) {
+      newSelected.delete(file.relativePath);
     } else {
-      newSelected.add(file.path);
+      newSelected.add(file.relativePath);
     }
     setSelectedSearchResults(newSelected);
   };
@@ -159,19 +170,19 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
     }
 
     // Get only the newly selected files that aren't already in selectedFiles
-    const newFilePaths = Array.from(selectedSearchResults)
-      .filter(path => !selectedFiles.some(f => f.path === path));
+    const newRelativePaths = Array.from(selectedSearchResults)
+      .filter(relativePath => !selectedFiles.some(f => f.relativePath === relativePath));
 
-    if (newFilePaths.length === 0) {
+    if (newRelativePaths.length === 0) {
       setSelectedSearchResults(new Set());
       setSearchQuery('');
       return;
     }
 
     const filesToAdd = await Promise.all(
-      newFilePaths.map(async (path) => {
-        const file = allFiles.find(f => f.path === path);
-        const content = await ipcRenderer.invoke('read-file', path);
+      newRelativePaths.map(async (relativePath) => {
+        const file = allFiles.find(f => f.relativePath === relativePath);
+        const content = await ipcRenderer.invoke('read-file', file.path);
         return {
           ...file,
           content
@@ -222,24 +233,24 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
       <div className="search-results">
           {searchResults.map((file) => (
             <div
-              key={file.path}
+              key={file.relativePath}
               className={`search-result ${
-                selectedSearchResults.has(file.path) ? 'selected' : ''
-              } ${selectedFiles.some(f => f.path === file.path) ? 'already-added' : ''
+                selectedSearchResults.has(file.relativePath) ? 'selected' : ''
+              } ${selectedFiles.some(f => f.relativePath === file.relativePath) ? 'already-added' : ''
               } ${searchResults.indexOf(file) === focusedIndex ? 'focused' : ''}`}
               onClick={() => {
                 // Prevent selecting already added files
-                if (!selectedFiles.some(f => f.path === file.path)) {
+                if (!selectedFiles.some(f => f.relativePath === file.relativePath)) {
                   toggleFileSelection(file);
                 }
               }}
-              title={selectedFiles.some(f => f.path === file.path) ? 'File already added to preview' : file.path}
+              title={selectedFiles.some(f => f.relativePath === file.relativePath) ? 'File already added to preview' : file.path}
             >
               <div className="file-info">
                 <span className="file-path">{file.relativePath}</span>
                 <span className="workspace-label">{file.workspaceLabel}</span>
               </div>
-              {selectedFiles.some(f => f.path === file.path) && (
+              {selectedFiles.some(f => f.relativePath === file.relativePath) && (
                 <span className="already-added-indicator">Already added</span>
               )}
             </div>
