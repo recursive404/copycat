@@ -300,10 +300,10 @@ function App() {
           y: (scrollPositionRef.current.y || 0) + direction.y
         };
         
-        const activeLayerElement = document.querySelector(`.background-layer:nth-child(${activeLayer})`);
-        if (activeLayerElement) {
-          activeLayerElement.style.backgroundPosition = `${scrollPositionRef.current.x}px ${scrollPositionRef.current.y}px`;
-        }
+        // Apply scroll position to both layers to maintain consistent animation
+        document.querySelectorAll('.background-layer').forEach(layer => {
+          layer.style.backgroundPosition = `${scrollPositionRef.current.x}px ${scrollPositionRef.current.y}px`;
+        });
       }, 20);
     }
 
