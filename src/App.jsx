@@ -266,19 +266,6 @@ function App() {
       <div className="app" style={{ opacity: settings.opacity }}>
         <TitleBar />
         <ToastContainer position="top-right" />
-        <Modal
-          isOpen={showSettings}
-          onClose={() => setShowSettings(false)}
-          title="Settings"
-        >
-          <Settings
-            settings={settings}
-            onSettingsChange={setSettings}
-            workspace={workspace}
-            setWorkspace={setWorkspace}
-            selectedFiles={selectedFiles}
-          />
-        </Modal>
         <div className="main-container">
           <div className="content-container">
             <PreviewWindow {...previewWindowProps} />
@@ -287,37 +274,49 @@ function App() {
             </div>
           </div>
 
-          <Modal
-            isOpen={showSystemPrompts}
-            onClose={() => setShowSystemPrompts(false)}
-            title="System Prompts"
-          >
-            <SystemPrompts
-              prompts={systemPrompts}
-              onPromptsChange={setSystemPrompts}
-            />
-          </Modal>
-
-          <Modal
-            isOpen={showFileModal}
-            onClose={() => setShowFileModal(false)}
-            title="Select Files"
-          >
-            <FileExplorer
-              onFilesSelected={(files) => {
-                // Create a Map using file paths as keys to ensure uniqueness
-                const uniqueFiles = new Map(
-                  [...selectedFiles, ...files].map(file => [file.path, file])
-                );
-                setSelectedFiles(Array.from(uniqueFiles.values()));
-                setShowFileModal(false);
-              }}
-              selectedFiles={selectedFiles}
-              workspace={workspace}
-            />
-          </Modal>
         </div>
       </div>
+      <Modal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        title="Settings"
+      >
+        <Settings
+          settings={settings}
+          onSettingsChange={setSettings}
+          workspace={workspace}
+          setWorkspace={setWorkspace}
+          selectedFiles={selectedFiles}
+        />
+      </Modal>
+      <Modal
+        isOpen={showSystemPrompts}
+        onClose={() => setShowSystemPrompts(false)}
+        title="System Prompts"
+      >
+        <SystemPrompts
+          prompts={systemPrompts}
+          onPromptsChange={setSystemPrompts}
+        />
+      </Modal>
+      <Modal
+        isOpen={showFileModal}
+        onClose={() => setShowFileModal(false)}
+        title="Select Files"
+      >
+        <FileExplorer
+          onFilesSelected={(files) => {
+            // Create a Map using file paths as keys to ensure uniqueness
+            const uniqueFiles = new Map(
+              [...selectedFiles, ...files].map(file => [file.path, file])
+            );
+            setSelectedFiles(Array.from(uniqueFiles.values()));
+            setShowFileModal(false);
+          }}
+          selectedFiles={selectedFiles}
+          workspace={workspace}
+        />
+      </Modal>
     </>
   );
 }
