@@ -405,7 +405,7 @@ function App() {
                 const handleMouseMove = (e) => {
                   const delta = startY - e.clientY;
                   const newHeight = Math.max(100, Math.min(800, startHeight + delta));
-                  onSettingsChange({
+                  setSettings({
                     ...settings,
                     promptHeight: `${newHeight}px`
                   });
