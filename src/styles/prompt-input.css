@@ -1,7 +1,6 @@
 .prompt-input {
   display: flex;
   gap: 2rem;
-  padding: 1rem;
   background-color: transparent;
   border-radius: 4px;
   width: 98%;
