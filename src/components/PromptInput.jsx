@@ -75,7 +75,7 @@ const PromptInput = ({
 
   return (
     <div className="prompt-input" style={style}>
-      <div className="textarea-container">
+      <div className="textarea-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
         <textarea
           value={localValue}
           onChange={(e) => handleChange(e.target.value)}
