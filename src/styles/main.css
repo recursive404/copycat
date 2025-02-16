@@ -112,12 +112,25 @@ body {
   z-index: 1;
 }
 
+.resize-handle {
+  height: 4px;
+  background: var(--border-color);
+  cursor: ns-resize;
+  transition: background-color 0.2s;
+  margin: 0 0.5rem;
+}
+
+.resize-handle:hover {
+  background: var(--accent);
+}
+
 .action-area {
   padding: 0.5rem;
   background-color: rgba(38, 38, 38, 0.8);
   border-radius: 8px;
   margin: 0.5rem;
   border-top: 1px solid var(--border-color);
+  transition: height 0.1s ease;
 }
 
 .action-buttons {
