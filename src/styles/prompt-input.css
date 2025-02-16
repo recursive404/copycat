@@ -4,8 +4,8 @@
   padding: 1rem;
   background-color: transparent;
   border-radius: 4px;
-  min-height: 120px;
   width: 98%;
+  height: 100%;
 }
 
 /* Ensure all child elements inherit opacity */
@@ -16,12 +16,13 @@
 .textarea-container {
   position: relative;
   flex: 1;
-  top: -10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .textarea-container textarea {
   width: 100%;
-  height: 100%;
+  flex: 1;
   min-height: 120px;
   padding: 0.5rem;
   background-color: rgb(26, 26, 26);
