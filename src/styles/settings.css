@@ -1,82 +1,390 @@
-.settings-content {
+.settings-container {
+  display: flex;
+  height: 100%;
   color: var(--text-primary);
-  padding: 0 20px;
+  background: var(--background);
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+.settings-sidebar {
+  width: 200px;
+  background: var(--background-lighter);
+  border-right: 1px solid var(--border);
+  padding: 12px 0;
+  flex-shrink: 0;
+}
+
+.category-button {
+  width: 100%;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+.category-button:hover {
+  background: var(--background-hover);
+}
+
+.category-button.active {
+  background: var(--background-selected);
+  border-left: 2px solid var(--accent);
+}
+
+.category-icon {
+  font-size: 1.2em;
+  width: 24px;
+  text-align: center;
+}
+
+.settings-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.settings-section {
+  background: var(--background-lighter);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.settings-section h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.2em;
+  color: var(--accent);
 }
 
 .settings-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+}
+
+.settings-group:last-child {
+  margin-bottom: 0;
 }
 
 .settings-group label {
   display: block;
   margin-bottom: 8px;
+  color: var(--text-secondary);
 }
 
 .settings-group input[type="text"],
-.settings-group input[type="range"],
 .settings-group select {
   width: 100%;
-  padding: 8px;
-  margin-top: 4px;
-  background: #2a2a2a;
-  border: 1px solid #444;
+  padding: 8px 12px;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 4px;
-  color: #fff;
+  color: var(--text-primary);
+  font-size: 0.9em;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.workspace-control {
+.settings-group input[type="text"]:focus,
+.settings-group select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+}
+
+.range-with-value {
   display: flex;
-  gap: 8px;
-  margin-top: 4px;
+  align-items: center;
+  gap: 12px;
 }
 
-.workspace-control input {
+.range-with-value input[type="range"] {
   flex: 1;
 }
 
-.workspace-control button {
-  white-space: nowrap;
-  padding: 8px 16px;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 4px;
-  color: #fff;
+.range-with-value span {
+  min-width: 40px;
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  position: relative;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--text-primary);
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -6px;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: var(--text-secondary);
+  border-color: var(--text-secondary);
+}
+
+.checkbox-label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
   cursor: pointer;
 }
 
-.workspace-control button:hover {
-  background: #3a3a3a;
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.workspaces-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settings-workspace-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+.workspace-item:hover {
+  border-color: var(--accent);
+}
+
+.settings-workspace-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.workspace-label {
+  font-weight: 500;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.workspace-label:hover {
+  background: var(--background-hover);
+}
+
+.workspace-label-edit {
+  font-size: 1em;
+  font-weight: 500;
+  padding: 4px 8px;
+  background: var(--background);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--text-primary);
+  width: auto;
+  min-width: 150px;
+}
+
+.workspace-label-edit:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+}
+
+.workspace-path {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workspace-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.workspace-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.workspace-actions button:active {
+  transform: scale(0.98);
+}
+
+.refresh-button {
+  background: var(--background-lighter);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.refresh-button:hover {
+  background: var(--background-hover);
+  border-color: var(--text-secondary);
+}
+
+.remove-button {
+  background: var(--background-lighter);
+  color: #ff4444;
+  border: 1px solid #ff4444;
+}
+
+.remove-button:hover {
+  background: rgba(255, 68, 68, 0.1);
+}
+
+.workspace-label-input {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.workspace-label-input input {
+  flex: 1;
+  padding: 8px;
+  background: var(--background-lighter);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+}
+
+.workspace-label-input button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.workspace-label-input button:active {
+  transform: scale(0.98);
+}
+
+.workspace-label-input button:first-of-type {
+  background: var(--background-lighter);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.workspace-label-input button:first-of-type:hover {
+  background: var(--background-hover);
+  border-color: var(--text-secondary);
+}
+
+.workspace-label-input button:first-of-type:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.workspace-label-input button:last-of-type {
+  background: var(--background-lighter);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.workspace-label-input button:last-of-type:hover {
+  background: var(--background-hover);
+  border-color: var(--text-secondary);
+}
+
+.add-workspace-button {
+  width: 100%;
+  padding: 12px;
+  background: var(--background-lighter);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.add-workspace-button:hover {
+  background: var(--background-hover);
+  border-color: var(--text-secondary);
+}
+
+.add-workspace-button:active {
+  transform: scale(0.98);
+}
+
+.reset-description {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
 }
 
 .reset-button {
   width: 100%;
   padding: 12px;
-  border: none;
+  background: var(--background-lighter);
+  border: 1px solid #ff4444;
   border-radius: 4px;
-  color: #fff;
+  color: #ff4444;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
+  font-family: inherit;
+  transition: all 0.2s;
 }
 
 .reset-button:hover {
-  background-color: #ff6666 !important;
+  background: rgba(255, 68, 68, 0.1);
 }
 
+.reset-button:active {
+  transform: scale(0.98);
+}
+
+/* Scrollbar Styling */
 .settings-content::-webkit-scrollbar {
   width: 8px;
 }
 
 .settings-content::-webkit-scrollbar-track {
-  background: #2a2a2a;
+  background: var(--background);
   border-radius: 4px;
 }
 
 .settings-content::-webkit-scrollbar-thumb {
-  background: #444;
+  background: var(--border);
   border-radius: 4px;
 }
 
 .settings-content::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--text-secondary);
 }

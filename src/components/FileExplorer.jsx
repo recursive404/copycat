@@ -11,16 +11,57 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
   const [selectedSearchResults, setSelectedSearchResults] = useState(new Set());
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
-  // Use workspace from settings
+  // Fetch and aggregate files from all workspaces
   useEffect(() => {
-    if (workspace) {
-      setAllFiles(workspace.files);
-      // Show first 50 files initially
-      setSearchResults(workspace.files.slice(0, 50));
-    } else {
-      setAllFiles([]);
-      setSearchResults([]);
-    }
+    const fetchAllWorkspaceFiles = async () => {
+      if (!workspace) {
+        setAllFiles([]);
+        setSearchResults([]);
+        return;
+      }
+
+      try {
+        // Handle both single workspace and array of workspaces
+        const workspaces = Array.isArray(workspace) ? workspace : [workspace];
+        
+        // Fetch files from all workspaces
+        const allWorkspaceFiles = await Promise.all(
+          workspaces.map(async (ws) => {
+            if (!ws || !ws.path) return [];
+            try {
+              const refreshed = await ipcRenderer.invoke('refresh-workspace', ws.path);
+              // Add workspace info to each file
+              return (refreshed?.files || []).map(file => ({
+                ...file,
+                workspaceLabel: ws.label,
+                relativePath: file.path.replace(ws.path + '/', '')
+              }));
+            } catch (error) {
+              console.error(`Error fetching files for workspace ${ws.path}:`, error);
+              return [];
+            }
+          })
+        );
+
+        // Flatten and combine all files
+        const combinedFiles = allWorkspaceFiles.flat();
+        
+        if (combinedFiles.length > 0) {
+          setAllFiles(combinedFiles);
+          // Show first 50 files initially
+          setSearchResults(combinedFiles.slice(0, 50));
+        } else {
+          setAllFiles([]);
+          setSearchResults([]);
+        }
+      } catch (error) {
+        console.error('Error fetching workspace files:', error);
+        setAllFiles([]);
+        setSearchResults([]);
+      }
+    };
+
+    fetchAllWorkspaceFiles();
   }, [workspace]);
 
   // Dedicated effect for handling input focus
@@ -113,7 +154,7 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
 
   const addSelectedFiles = async () => {
     if (!workspace) {
-      toast.error('Please select a workspace in Settings first');
+      console.error('Please select a workspace in Settings first');
       return;
     }
 
@@ -149,10 +190,14 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
 
   return (
     <div className="file-explorer">
-      <div className="workspace-info">
+      <div className="file-explorer-workspace-info">
         <div className="workspace-header">
-          <span className="workspace-path" title="Current Workspace">
-            {allFiles.length > 0 ? `Files found: ${allFiles.length}` : 'No workspace selected'}
+          <span className="workspace-path" title="Current Workspaces">
+            {allFiles.length > 0 ? (
+              <>
+                Files found: {allFiles.length} from {Array.isArray(workspace) ? workspace.length : 1} workspace{Array.isArray(workspace) && workspace.length !== 1 ? 's' : ''}
+              </>
+            ) : 'No workspace selected'}
           </span>
         </div>
         <div className="search-box">
@@ -190,7 +235,10 @@ const FileExplorer = ({ onFilesSelected, selectedFiles, workspace }) => {
               }}
               title={selectedFiles.some(f => f.path === file.path) ? 'File already added to preview' : file.path}
             >
-              <span>{file.path}</span>
+              <div className="file-info">
+                <span className="file-path">{file.relativePath}</span>
+                <span className="workspace-label">{file.workspaceLabel}</span>
+              </div>
               {selectedFiles.some(f => f.path === file.path) && (
                 <span className="already-added-indicator">Already added</span>
               )}

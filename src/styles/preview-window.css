@@ -76,16 +76,28 @@
   color: var(--text-secondary);
   cursor: grab;
   padding: 0.25rem;
-  opacity: 0.6;
+  opacity: 0;
   transition: opacity 0.2s;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+}
+
+.file-preview-header:hover .drag-handle {
+  opacity: 0.6;
 }
 
 .drag-handle:hover {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 .drag-handle:active {
   cursor: grabbing;
+}
+
+/* Ensure drag handle is visible when dragging */
+[data-rbd-dragging-id] .drag-handle {
+  opacity: 1;
 }
 
 .icon-container {

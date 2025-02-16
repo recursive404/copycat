@@ -1,98 +1,174 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import '../styles/settings.css';
 const { ipcRenderer } = window.require('electron');
 
 const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
+  const [workspaceLabel, setWorkspaceLabel] = useState('');
+  const [showLabelInput, setShowLabelInput] = useState(false);
+  const [selectedDirectory, setSelectedDirectory] = useState(null);
+  const [editingWorkspaceIndex, setEditingWorkspaceIndex] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('appearance');
+
   const handleSelectWorkspace = async () => {
     const result = await ipcRenderer.invoke('select-directory');
     if (result) {
-      setWorkspace(result);
-      // Clear selected files when workspace changes
-      ipcRenderer.send('clear-selected-files');
+      setSelectedDirectory(result);
+      setShowLabelInput(true);
     }
   };
+
+  const handleAddWorkspace = () => {
+    if (selectedDirectory && workspaceLabel.trim()) {
+      const newWorkspace = {
+        ...selectedDirectory,
+        label: workspaceLabel.trim()
+      };
+      
+      const updatedWorkspaces = workspace ? 
+        (Array.isArray(workspace) ? [...workspace, newWorkspace] : [workspace, newWorkspace]) : 
+        [newWorkspace];
+      
+      setWorkspace(updatedWorkspaces);
+      ipcRenderer.send('clear-selected-files');
+      
+      setWorkspaceLabel('');
+      setShowLabelInput(false);
+      setSelectedDirectory(null);
+    }
+  };
+
+  const handleRemoveWorkspace = (index) => {
+    const updatedWorkspaces = [...workspace];
+    updatedWorkspaces.splice(index, 1);
+    setWorkspace(updatedWorkspaces.length > 0 ? updatedWorkspaces : null);
+    ipcRenderer.send('clear-selected-files');
+  };
+
   const handleChange = (key, value) => {
     onSettingsChange({ ...settings, [key]: value });
   };
 
-  return (
-    <div className="settings-content" style={{
-      flex: '1 1 auto',
-      overflowY: 'auto',
-      padding: '0 20px',
-      margin: '0 -20px' // Compensate for container padding
-    }}>
-      <div className="settings-group">
-        <label>
-          Background Image URL:
-          <input
-            type="text"
-            value={settings.backgroundImage || ''}
-            onChange={(e) => handleChange('backgroundImage', e.target.value)}
-            placeholder="Enter image URL..."
-          />
-        </label>
+  const categories = [
+    {
+      id: 'workspaces',
+      label: 'Workspaces'
+    },
+    {
+      id: 'appearance',
+      label: 'Appearance'
+    },
+    {
+      id: 'reset',
+      label: 'Reset Settings'
+    }
+  ];
+
+  const renderAppearanceSettings = () => (
+    <>
+      <div className="settings-section">
+        <h2>Background Settings</h2>
+        <div className="settings-group">
+          <label>
+            Background Image URL
+            <input
+              type="text"
+              value={settings.backgroundImage || ''}
+              onChange={(e) => handleChange('backgroundImage', e.target.value)}
+              placeholder="Enter image URL..."
+            />
+          </label>
+        </div>
+
+        <div className="settings-group">
+          <label>
+            Background Scale
+            <select
+              value={settings.backgroundScale || 'cover'}
+              onChange={(e) => handleChange('backgroundScale', e.target.value)}
+            >
+              <option value="cover">Cover</option>
+              <option value="contain">Contain</option>
+              <option value="100%">100%</option>
+              <option value="150%">150%</option>
+              <option value="200%">200%</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="settings-group">
+          <label>
+            Background Blur
+            <div className="range-with-value">
+              <input
+                type="range"
+                min="0"
+                max="20"
+                value={settings.blur || 0}
+                onChange={(e) => handleChange('blur', e.target.value)}
+              />
+              <span>{settings.blur || 0}px</span>
+            </div>
+          </label>
+        </div>
       </div>
 
-      <div className="settings-group">
-        <label>
-          Preview Window Opacity:
-          <input
-            type="range"
-            min="0.1"
-            max="1"
-            step="0.01"
-            value={settings.previewOpacity || 1}
-            onChange={(e) => handleChange('previewOpacity', e.target.value)}
-          />
-          {settings.previewOpacity || 1}
-        </label>
-      </div>
+      <div className="settings-section">
+        <h2>Opacity Settings</h2>
+        <div className="settings-group">
+          <label>
+            Preview Window Opacity
+            <div className="range-with-value">
+              <input
+                type="range"
+                min="0.1"
+                max="1"
+                step="0.01"
+                value={settings.previewOpacity || 1}
+                onChange={(e) => handleChange('previewOpacity', e.target.value)}
+              />
+              <span>{settings.previewOpacity || 1}</span>
+            </div>
+          </label>
+        </div>
 
-      <div className="settings-group">
-        <label>
-          Prompt Input Opacity:
-          <input
-            type="range"
-            min="0.1"
-            max="1"
-            step="0.01"
-            value={settings.promptOpacity || 1}
-            onChange={(e) => handleChange('promptOpacity', e.target.value)}
-          />
-          {settings.promptOpacity || 1}
-        </label>
+        <div className="settings-group">
+          <label>
+            Prompt Input Opacity
+            <div className="range-with-value">
+              <input
+                type="range"
+                min="0.1"
+                max="1"
+                step="0.01"
+                value={settings.promptOpacity || 1}
+                onChange={(e) => handleChange('promptOpacity', e.target.value)}
+              />
+              <span>{settings.promptOpacity || 1}</span>
+            </div>
+          </label>
+        </div>
       </div>
+    </>
+  );
 
+  const renderAnimationSettings = () => (
+    <div className="settings-section">
+      <h2>Background Animation</h2>
       <div className="settings-group">
-        <label>
-          Background Blur:
-          <input
-            type="range"
-            min="0"
-            max="20"
-            value={settings.blur || 0}
-            onChange={(e) => handleChange('blur', e.target.value)}
-          />
-          {settings.blur || 0}px
-        </label>
-      </div>
-
-      <div className="settings-group">
-        <label>
-          Enable Background Scroll:
+        <label className="checkbox-label">
           <input
             type="checkbox"
             checked={settings.backgroundScroll || false}
             onChange={(e) => handleChange('backgroundScroll', e.target.checked)}
           />
+          Enable Background Scroll
         </label>
       </div>
 
       <div className="settings-group">
         <label>
-          Scroll Direction:
+          Scroll Direction
           <select
             value={settings.scrollDirection || 'right'}
             onChange={(e) => handleChange('scrollDirection', e.target.value)}
@@ -112,85 +188,173 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
 
       <div className="settings-group">
         <label>
-          Scroll Speed:
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={settings.scrollSpeed || 5}
-            onChange={(e) => handleChange('scrollSpeed', Number(e.target.value))}
-            disabled={!settings.backgroundScroll}
-          />
-          {settings.scrollSpeed || 5}
-        </label>
-      </div>
-
-      <div className="settings-group">
-        <label>
-          Background Scale:
-          <select
-            value={settings.backgroundScale || 'cover'}
-            onChange={(e) => handleChange('backgroundScale', e.target.value)}
-          >
-            <option value="cover">Cover</option>
-            <option value="contain">Contain</option>
-            <option value="100%">100%</option>
-            <option value="150%">150%</option>
-            <option value="200%">200%</option>
-          </select>
-        </label>
-      </div>
-
-      <div className="settings-group">
-        <label>
-          Workspace Directory:
-          <div className="workspace-control">
+          Scroll Speed
+          <div className="range-with-value">
             <input
-              type="text"
-              value={workspace?.path || ''}
-              readOnly
-              placeholder="No workspace selected"
-              style={{ flex: 1 }}
+              type="range"
+              min="1"
+              max="10"
+              value={settings.scrollSpeed || 5}
+              onChange={(e) => handleChange('scrollSpeed', Number(e.target.value))}
+              disabled={!settings.backgroundScroll}
             />
-            <button onClick={handleSelectWorkspace}>
-              Select Workspace
-            </button>
-            {workspace && (
+            <span>{settings.scrollSpeed || 5}</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  );
+
+  const renderWorkspaceSettings = () => (
+    <div className="settings-section">
+      <h2>Manage Workspaces</h2>
+      <div className="workspaces-list">
+        {workspace && (Array.isArray(workspace) ? workspace : [workspace]).map((ws, index) => (
+          <div key={ws.path} className="settings-workspace-item">
+            <div className="settings-workspace-info">
+              {editingWorkspaceIndex === index ? (
+                <input
+                  type="text"
+                  value={workspaceLabel}
+                  onChange={(e) => setWorkspaceLabel(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const updatedWorkspaces = [...(Array.isArray(workspace) ? workspace : [workspace])];
+                      updatedWorkspaces[index] = { ...ws, label: workspaceLabel.trim() };
+                      setWorkspace(updatedWorkspaces);
+                      setEditingWorkspaceIndex(null);
+                      setWorkspaceLabel('');
+                    } else if (e.key === 'Escape') {
+                      setEditingWorkspaceIndex(null);
+                      setWorkspaceLabel('');
+                    }
+                  }}
+                  onBlur={() => {
+                    setEditingWorkspaceIndex(null);
+                    setWorkspaceLabel('');
+                  }}
+                  autoFocus
+                  className="workspace-label-edit"
+                />
+              ) : (
+                <span 
+                  className="workspace-label"
+                  onClick={() => {
+                    setEditingWorkspaceIndex(index);
+                    setWorkspaceLabel(ws.label || '');
+                  }}
+                  title="Click to edit label"
+                >
+                  {ws.label}
+                </span>
+              )}
+              <span className="workspace-path" title={ws.path}>{ws.path}</span>
+            </div>
+            <div className="workspace-actions">
               <button 
                 onClick={async () => {
-                  const refreshed = await ipcRenderer.invoke('refresh-workspace', workspace.path);
+                  const refreshed = await ipcRenderer.invoke('refresh-workspace', ws.path);
                   if (refreshed) {
-                    setWorkspace(refreshed);
+                    const updatedWorkspaces = [...(Array.isArray(workspace) ? workspace : [workspace])];
+                    updatedWorkspaces[index] = { ...refreshed, label: ws.label };
+                    setWorkspace(updatedWorkspaces);
                     toast.success('Workspace files refreshed');
                   } else {
                     toast.error('Failed to refresh workspace files');
                   }
                 }}
-                style={{ marginLeft: '8px' }}
+                className="refresh-button"
               >
-                Refresh Files
+                Refresh
               </button>
-            )}
+              <button 
+                onClick={() => handleRemoveWorkspace(index)}
+                className="remove-button"
+              >
+                Remove
+              </button>
+            </div>
           </div>
-        </label>
+        ))}
+        
+        {showLabelInput ? (
+          <div className="workspace-label-input">
+            <input
+              type="text"
+              value={workspaceLabel}
+              onChange={(e) => setWorkspaceLabel(e.target.value)}
+              placeholder="Enter workspace label..."
+            />
+            <button 
+              onClick={handleAddWorkspace}
+              disabled={!workspaceLabel.trim()}
+            >
+              Add
+            </button>
+            <button onClick={() => {
+              setShowLabelInput(false);
+              setWorkspaceLabel('');
+              setSelectedDirectory(null);
+            }}>
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button onClick={handleSelectWorkspace} className="add-workspace-button">
+            Add Workspace
+          </button>
+        )}
       </div>
 
+    </div>
+  );
+
+  const renderResetSettings = () => (
+    <div className="settings-section">
+      <h2>Reset All Settings</h2>
       <div className="settings-group">
+        <p className="reset-description">
+          This will reset all settings to their default values and clear all selected files. This action cannot be undone.
+        </p>
         <button
           onClick={() => {
             if (window.confirm('Are you sure you want to reset all settings and clear selected files?')) {
               localStorage.clear();
-              // Clear the saved prompt specifically
               localStorage.removeItem('savedPrompt');
               setWorkspace(null);
               window.location.reload();
             }
           }}
           className="reset-button"
-          style={{ marginTop: '20px', backgroundColor: '#ff4444' }}
         >
           Reset All Settings
         </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="settings-container">
+      <div className="settings-sidebar">
+        {categories.map(category => (
+          <button
+            key={category.id}
+            className={`category-button ${activeCategory === category.id ? 'active' : ''}`}
+            onClick={() => setActiveCategory(category.id)}
+          >
+            {category.label}
+          </button>
+        ))}
+      </div>
+      <div className="settings-content">
+        {activeCategory === 'workspaces' && renderWorkspaceSettings()}
+        {activeCategory === 'appearance' && (
+          <>
+            {renderAppearanceSettings()}
+            {renderAnimationSettings()}
+          </>
+        )}
+        {activeCategory === 'reset' && renderResetSettings()}
       </div>
     </div>
   );
