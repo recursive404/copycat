@@ -1,6 +1,6 @@
 .preview-window {
   flex: 1;
-  background-color: rgba(38, 38, 38, 0.8);
+  background-color: rgb(38, 38, 38);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -8,6 +8,17 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   margin: 0.5rem;
   margin-bottom: 0;
+}
+
+/* Ensure content elements inherit opacity but headers stay opaque */
+.preview-window .file-preview-content,
+.preview-window .file-preview-content * {
+  opacity: inherit;
+}
+
+.file-preview-header,
+.file-preview-header * {
+  opacity: 1 !important;
 }
 
 .preview-window .file-preview-item {
@@ -62,7 +73,7 @@
 
 /* Make header background solid when sticky */
 .file-preview-item[style*="padding-top: 3rem"] .file-preview-header {
-  background-color: var(--secondary-bg);
+  background-color: rgb(38, 38, 38);
   border-bottom: 1px solid var(--border-color);
   margin-top: -0.5rem;
   padding-top: 1rem;
@@ -137,7 +148,7 @@
 .file-preview-content {
   margin-top: 0.5rem;
   padding: 0.5rem;
-  background-color: rgba(26, 26, 26, 0.8);
+  background-color: rgb(26, 26, 26);
   border-radius: 4px;
 }
 
