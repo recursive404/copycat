@@ -159,12 +159,17 @@ function App() {
   }, []);
 
   // Memoize child components' props
+  const handleFilesChange = useCallback((newFiles) => {
+    setSelectedFiles(newFiles);
+  }, []);
+
   const previewWindowProps = useMemo(() => ({
     files: selectedFiles,
     onRemoveFile: handleRemoveFile,
     onSystemPromptsClick: handleSystemPromptsClick,
-    onAddFilesClick: handleAddFiles
-  }), [selectedFiles, handleRemoveFile, handleSystemPromptsClick, handleAddFiles]);
+    onAddFilesClick: handleAddFiles,
+    onFilesChange: handleFilesChange
+  }), [selectedFiles, handleRemoveFile, handleSystemPromptsClick, handleAddFiles, handleFilesChange]);
 
   const promptInputProps = useMemo(() => ({
     value: prompt,

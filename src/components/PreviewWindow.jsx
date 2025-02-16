@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { saveFiles } from '../utils/persistence';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/preview-window.css';
@@ -24,7 +25,8 @@ const FilePreview = React.memo(({
   isCollapsed, 
   onToggleCollapse, 
   onRemove, 
-  isSticky 
+  isSticky,
+  dragHandleProps
 }) => {
   return (
     <div 
@@ -38,11 +40,16 @@ const FilePreview = React.memo(({
       <div
         className="file-preview-header"
         onClick={(e) => {
-          if (!e.target.closest('.remove-icon')) {
+          if (!e.target.closest('.remove-icon') && !e.target.closest('.drag-handle')) {
             onToggleCollapse(file.path);
           }
         }}
       >
+        {isCollapsed && dragHandleProps && (
+          <div className="drag-handle" {...dragHandleProps}>
+            &#x2630;
+          </div>
+        )}
         <div className="icon-container">
           <FontAwesomeIcon
             icon={isCollapsed ? faChevronRight : faChevronDown}
@@ -94,7 +101,7 @@ const FilePreview = React.memo(({
   );
 });
 
-const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesClick, style }) => {
+const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesClick, style, onFilesChange }) => {
   const [collapsedFiles, setCollapsedFiles] = useState(new Set());
 
   const toggleCollapse = useCallback((path) => {
@@ -141,6 +148,16 @@ const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesCl
     };
   }, []);
 
+  const onDragEnd = useCallback((result) => {
+    if (!result.destination) return;
+    
+    const items = Array.from(files);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    
+    onFilesChange(items);
+  }, [files, onFilesChange]);
+
   return (
     <div className="preview-window" style={style}>
       <div className="preview-content" style={{ 
@@ -148,16 +165,46 @@ const PreviewWindow = ({ files, onRemoveFile, onSystemPromptsClick, onAddFilesCl
         overflowY: files.length > 0 ? 'auto' : 'hidden'
       }}>
         {files.length > 0 ? (
-          files.map((file, index) => (
-            <FilePreview
-              key={`${file.path}-${index}`}
-              file={file}
-              isCollapsed={collapsedFiles.has(file.path)}
-              onToggleCollapse={toggleCollapse}
-              onRemove={onRemoveFile}
-              isSticky={stickyHeaders.has(file.path)}
-            />
-          ))
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="files">
+              {(provided) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {files.map((file, index) => (
+                    <Draggable
+                      key={file.path}
+                      draggableId={file.path}
+                      index={index}
+                      isDragDisabled={!collapsedFiles.has(file.path)}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          style={{
+                            ...provided.draggableProps.style,
+                            background: snapshot.isDragging ? 'var(--hover-bg)' : 'transparent'
+                          }}
+                        >
+                          <FilePreview
+                            file={file}
+                            isCollapsed={collapsedFiles.has(file.path)}
+                            onToggleCollapse={toggleCollapse}
+                            onRemove={onRemoveFile}
+                            isSticky={stickyHeaders.has(file.path)}
+                            dragHandleProps={collapsedFiles.has(file.path) ? provided.dragHandleProps : null}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         ) : (
           <div className="empty-preview" onClick={onAddFilesClick} style={{ height: '100%' }}>
             <div className="empty-preview-content" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
