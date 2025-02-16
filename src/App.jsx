@@ -372,8 +372,8 @@ function App() {
   return (
     <>
       <div className="app-background">
-        <div className="background-layer" style={layer1Style} />
-        <div className="background-layer" style={layer2Style} />
+        <div className="background-layer" style={{ ...layer1Style, backgroundColor: settings.backgroundColor || '#1E1E1E' }} />
+        <div className="background-layer" style={{ ...layer2Style, backgroundColor: settings.backgroundColor || '#1E1E1E' }} />
       </div>
       <div className="app">
         <TitleBar 
