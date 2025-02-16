@@ -14,6 +14,11 @@ import './styles/main.css';
 function App() {
   const scrollIntervalRef = useRef(null);
   const scrollPositionRef = useRef({ x: 0, y: 0 });
+  const slideshowIntervalRef = useRef(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [activeLayer, setActiveLayer] = useState(1);
+  const [layer1Style, setLayer1Style] = useState({ opacity: 1 });
+  const [layer2Style, setLayer2Style] = useState({ opacity: 0 });
 
   const getDirections = (speed) => {
     const multiplier = (speed || 5) / 3;
@@ -76,23 +81,26 @@ function App() {
   });
   const [settings, setSettings] = useState(() => {
     const savedSettings = localStorage.getItem('appSettings');
-    return savedSettings ? JSON.parse(savedSettings) : {
-      backgroundImage: '',
+    const initialSettings = savedSettings ? JSON.parse(savedSettings) : {
+      backgroundSets: [],
       previewOpacity: 1,
       promptOpacity: 1,
       blur: 0,
       backgroundScale: 'cover',
       backgroundScroll: false,
       scrollDirection: 'right',
-      scrollSpeed: 5
+      scrollSpeed: 5,
+      slideshowEnabled: false,
+      slideshowInterval: 60,
+      slideshowMode: 'sequential'
     };
+    return initialSettings;
   });
 
   // Save settings to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('appSettings', JSON.stringify(settings));
   }, [settings]);
-
 
   // Add event listener for settings toggle
   useEffect(() => {
@@ -193,21 +201,86 @@ function App() {
     selectedFiles
   ]);
 
+  // Reset image index when slideshow settings change
+  useEffect(() => {
+    if (settings.slideshowEnabled) {
+      setCurrentImageIndex(0);
+    }
+  }, [settings.slideshowEnabled, settings.slideshowMode]);
+
   // Apply settings to the app
   useEffect(() => {
     const root = document.documentElement;
-    const bg = document.querySelector('.app-background');
     
     root.style.setProperty('--blur', `${settings.blur}px`);
     root.style.setProperty('--preview-opacity', settings.previewOpacity);
     root.style.setProperty('--prompt-opacity', settings.promptOpacity);
     
-    if (settings.backgroundImage) {
-      bg.style.backgroundImage = `url(${settings.backgroundImage})`;
-      bg.style.backgroundSize = settings.backgroundScale || 'cover';
+    // Get enabled images from background sets
+    const validImages = settings.backgroundSets
+      ?.filter(set => set.enabled)
+      .flatMap(set => set.images)
+      .filter(img => img.enabled)
+      .map(img => img.url)
+      .filter(Boolean) || [];
+
+    if (validImages.length > 0) {
+      const currentImage = validImages[currentImageIndex];
+      const layer1 = document.querySelector('.background-layer:first-child');
+      const layer2 = document.querySelector('.background-layer:last-child');
+      
+      if (activeLayer === 1) {
+        layer2.style.backgroundImage = `url(${currentImage})`;
+        layer2.style.backgroundSize = settings.backgroundScale || 'cover';
+        setLayer1Style({ opacity: 0 });
+        setLayer2Style({ opacity: 1 });
+        setActiveLayer(2);
+      } else {
+        layer1.style.backgroundImage = `url(${currentImage})`;
+        layer1.style.backgroundSize = settings.backgroundScale || 'cover';
+        setLayer1Style({ opacity: 1 });
+        setLayer2Style({ opacity: 0 });
+        setActiveLayer(1);
+      }
     } else {
-      bg.style.backgroundImage = 'none';
-      bg.style.backgroundSize = 'cover';
+      setLayer1Style({ backgroundImage: 'none', opacity: 1 });
+      setLayer2Style({ backgroundImage: 'none', opacity: 0 });
+    }
+
+    // Clear existing slideshow interval if any
+    if (slideshowIntervalRef.current) {
+      clearInterval(slideshowIntervalRef.current);
+      slideshowIntervalRef.current = null;
+    }
+
+    // Setup slideshow if enabled and we have multiple images
+    if (settings.slideshowEnabled && validImages.length > 1) {
+      const getNextIndex = () => {
+        const totalImages = validImages.length;
+        
+        switch (settings.slideshowMode) {
+          case 'sequential':
+            return (currentImageIndex + 1) % totalImages;
+          
+          case 'random':
+            return Math.floor(Math.random() * totalImages);
+          
+          case 'random-no-repeat': {
+            let nextIndex;
+            do {
+              nextIndex = Math.floor(Math.random() * totalImages);
+            } while (totalImages > 1 && nextIndex === currentImageIndex);
+            return nextIndex;
+          }
+          
+          default:
+            return (currentImageIndex + 1) % totalImages;
+        }
+      };
+
+      slideshowIntervalRef.current = setInterval(() => {
+        setCurrentImageIndex(getNextIndex());
+      }, settings.slideshowInterval * 1000);
     }
 
     // Clear existing interval if any
@@ -227,7 +300,10 @@ function App() {
           y: (scrollPositionRef.current.y || 0) + direction.y
         };
         
-        bg.style.backgroundPosition = `${scrollPositionRef.current.x}px ${scrollPositionRef.current.y}px`;
+        const activeLayerElement = document.querySelector(`.background-layer:nth-child(${activeLayer})`);
+        if (activeLayerElement) {
+          activeLayerElement.style.backgroundPosition = `${scrollPositionRef.current.x}px ${scrollPositionRef.current.y}px`;
+        }
       }, 20);
     }
 
@@ -237,9 +313,12 @@ function App() {
         clearInterval(scrollIntervalRef.current);
         scrollIntervalRef.current = null;
       }
+      if (slideshowIntervalRef.current) {
+        clearInterval(slideshowIntervalRef.current);
+        slideshowIntervalRef.current = null;
+      }
     };
-  }, [settings]);
-
+  }, [settings, currentImageIndex]);
 
   // Save workspace to localStorage whenever it changes
   useEffect(() => {
@@ -250,16 +329,38 @@ function App() {
     }
   }, [workspace]);
 
+  const handleRandomize = useCallback(() => {
+    if (settings.slideshowEnabled && settings.backgroundSets?.length > 0) {
+      const validImages = settings.backgroundSets
+        .filter(set => set.enabled)
+        .flatMap(set => set.images)
+        .filter(img => img.enabled)
+        .map(img => img.url)
+        .filter(Boolean);
+
+      if (validImages.length > 1) {
+        let nextIndex;
+        do {
+          nextIndex = Math.floor(Math.random() * validImages.length);
+        } while (validImages.length > 1 && nextIndex === currentImageIndex);
+        setCurrentImageIndex(nextIndex);
+      }
+    }
+  }, [settings.slideshowEnabled, settings.backgroundSets, currentImageIndex]);
+
   const resetSettings = () => {
     const defaultSettings = {
-      backgroundImage: '',
+      backgroundSets: [],
       previewOpacity: 1,
       promptOpacity: 1,
       blur: 0,
       backgroundScale: 'cover',
       backgroundScroll: false,
       scrollDirection: 'right',
-      scrollSpeed: 5
+      scrollSpeed: 5,
+      slideshowEnabled: false,
+      slideshowInterval: 60,
+      slideshowMode: 'sequential'
     };
     setSettings(defaultSettings);
     setWorkspace(null);
@@ -270,9 +371,16 @@ function App() {
 
   return (
     <>
-      <div className="app-background" />
+      <div className="app-background">
+        <div className="background-layer" style={layer1Style} />
+        <div className="background-layer" style={layer2Style} />
+      </div>
       <div className="app">
-        <TitleBar />
+        <TitleBar 
+          slideshowEnabled={settings.slideshowEnabled}
+          slideshowMode={settings.slideshowMode}
+          onRandomize={handleRandomize}
+        />
         <ToastContainer 
           position="top-center" 
           style={{ marginTop: '2.5rem' }} // Add space below title bar
@@ -285,7 +393,6 @@ function App() {
               <PromptInput {...promptInputProps} />
             </div>
           </div>
-
         </div>
       </div>
       <Modal

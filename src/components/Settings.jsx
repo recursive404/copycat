@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import '../styles/settings.css';
+import BackgroundManager from './BackgroundManager';
 const { ipcRenderer } = window.require('electron');
 
 const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
@@ -8,7 +9,7 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
   const [showLabelInput, setShowLabelInput] = useState(false);
   const [selectedDirectory, setSelectedDirectory] = useState(null);
   const [editingWorkspaceIndex, setEditingWorkspaceIndex] = useState(null);
-  const [activeCategory, setActiveCategory] = useState('appearance');
+  const [activeCategory, setActiveCategory] = useState('workspaces');
 
   const handleSelectWorkspace = async () => {
     const result = await ipcRenderer.invoke('select-directory');
@@ -46,7 +47,8 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
   };
 
   const handleChange = (key, value) => {
-    onSettingsChange({ ...settings, [key]: value });
+    const newSettings = { ...settings, [key]: value };
+    onSettingsChange(newSettings);
   };
 
   const categories = [
@@ -70,14 +72,22 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
         <h2>Background Settings</h2>
         <div className="settings-group">
           <label>
-            Background Image URL
+            Background Color
             <input
-              type="text"
-              value={settings.backgroundImage || ''}
-              onChange={(e) => handleChange('backgroundImage', e.target.value)}
-              placeholder="Enter image URL..."
+              type="color"
+              value={settings.backgroundColor || '#1E1E1E'}
+              onChange={(e) => handleChange('backgroundColor', e.target.value)}
+              title="Choose background color"
             />
           </label>
+        </div>
+        <div className="settings-group">
+          <BackgroundManager
+            sets={settings.backgroundSets || []}
+            onSetsChange={(newSets) => {
+              handleChange('backgroundSets', newSets);
+            }}
+          />
         </div>
 
         <div className="settings-group">
@@ -153,8 +163,56 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
   );
 
   const renderAnimationSettings = () => (
-    <div className="settings-section">
-      <h2>Background Animation</h2>
+    <>
+      <div className="settings-section">
+        <h2>Background Slideshow</h2>
+        <div className="settings-group">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={settings.slideshowEnabled || false}
+              onChange={(e) => handleChange('slideshowEnabled', e.target.checked)}
+            />
+            Enable Background Slideshow
+          </label>
+        </div>
+
+        <div className="settings-group">
+          <label>
+            Slideshow Interval (seconds)
+            <div className="range-with-value">
+              <input
+                type="range"
+                min="5"
+                max="300"
+                step="5"
+                value={settings.slideshowInterval || 60}
+                onChange={(e) => handleChange('slideshowInterval', Number(e.target.value))}
+                disabled={!settings.slideshowEnabled}
+              />
+              <span>{settings.slideshowInterval || 60}s</span>
+            </div>
+          </label>
+        </div>
+
+        <div className="settings-group">
+          <label>
+            Slideshow Mode
+            <select
+              value={settings.slideshowMode || 'sequential'}
+              onChange={(e) => handleChange('slideshowMode', e.target.value)}
+              disabled={!settings.slideshowEnabled}
+            >
+              <option value="sequential">Sequential</option>
+              <option value="random">Random (with repeats)</option>
+              <option value="random-no-repeat">Random (no repeats)</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div className="settings-section">
+        <h2>Background Animation</h2>
       <div className="settings-group">
         <label className="checkbox-label">
           <input
@@ -203,6 +261,7 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
         </label>
       </div>
     </div>
+    </>
   );
 
   const renderWorkspaceSettings = () => (

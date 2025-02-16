@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faWindowMinimize, faWindowMaximize, faXmark, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faWindowMinimize, faWindowMaximize, faXmark, faWindowRestore, faDice } from '@fortawesome/free-solid-svg-icons';
 const { getCurrentWindow } = window.require('@electron/remote');
 import './../styles/titlebar.css';
 
-const TitleBar = () => {
+const TitleBar = ({ slideshowEnabled, slideshowMode, onRandomize }) => {
   const [isMaximized, setIsMaximized] = useState(false);
   const win = getCurrentWindow();
 
@@ -32,6 +32,11 @@ const TitleBar = () => {
         <div className="title-bar-brand">copycat</div>
       </div>
       <div className="title-bar-controls">
+        {slideshowEnabled && (slideshowMode === 'random' || slideshowMode === 'random-no-repeat') && (
+          <button className="title-bar-button" onClick={onRandomize} title="Randomize Background">
+            <FontAwesomeIcon icon={faDice} />
+          </button>
+        )}
         <button className="title-bar-button settings" onClick={() => window.dispatchEvent(new Event('toggle-settings'))}>
           <FontAwesomeIcon icon={faCog} />
         </button>

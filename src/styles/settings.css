@@ -3,7 +3,7 @@
   height: 100%;
   color: var(--text-primary);
   background: var(--background);
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 .settings-sidebar {
@@ -26,7 +26,7 @@
   align-items: center;
   gap: 8px;
   transition: background-color 0.2s;
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-family: inherit;
 }
 
 .category-button:hover {
@@ -36,6 +36,7 @@
 .category-button.active {
   background: var(--background-selected);
   border-left: 2px solid var(--accent);
+  font-weight: 500;
 }
 
 .category-icon {
@@ -61,6 +62,7 @@
   margin: 0 0 16px 0;
   font-size: 1.2em;
   color: var(--accent);
+  font-weight: 600;
 }
 
 .settings-group {
@@ -71,35 +73,101 @@
   margin-bottom: 0;
 }
 
-.settings-group label {
+.settings-group > label {
   display: block;
   margin-bottom: 8px;
   color: var(--text-secondary);
+  font-weight: 500;
+  width: 100%;
+}
+
+.background-images-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  background: var(--background);
+}
+
+.background-image-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.background-image-item:last-child {
+  margin-bottom: 0;
+}
+
+.background-image-item input {
+  flex: 1;
+}
+
+.background-image-item .remove-image-button {
+  padding: 6px 10px;
+  background: var(--background-lighter);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: #ff4444;
+  cursor: pointer;
+  font-size: 1.2em;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.background-image-item .remove-image-button:hover {
+  background: rgba(255, 68, 68, 0.1);
+  border-color: #ff4444;
+}
+
+.add-image-button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  background: var(--background-lighter);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-image-button:hover {
+  background: var(--background-hover);
+  border-color: var(--accent);
 }
 
 .settings-group input[type="text"],
 .settings-group select {
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px 12px;
   background: var(--background);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 6px;
   color: var(--text-primary);
-  font-size: 0.9em;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  font-size: 0.95em;
+  transition: all 0.2s ease;
+}
+
+.settings-group input[type="text"]:hover,
+.settings-group select:hover {
+  border-color: var(--text-secondary);
 }
 
 .settings-group input[type="text"]:focus,
 .settings-group select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
 }
 
 .range-with-value {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-top: 8px;
 }
 
 .range-with-value input[type="range"] {
@@ -107,43 +175,52 @@
 }
 
 .range-with-value span {
-  min-width: 40px;
+  min-width: 45px;
   text-align: right;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.95em;
 }
 
 input[type="range"] {
   -webkit-appearance: none;
   width: 100%;
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
+  height: 8px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 4px;
   outline: none;
   position: relative;
+  margin: 10px 0;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
   width: 100%;
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
+  height: 8px;
+  background: var(--background);
+  border-radius: 4px;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  background: var(--text-primary);
-  border: 2px solid var(--border);
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  border: 2px solid var(--background-lighter);
   border-radius: 50%;
   cursor: pointer;
   margin-top: -6px;
-  transition: background-color 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  background: var(--text-secondary);
-  border-color: var(--text-secondary);
+  background: var(--accent);
+  transform: scale(1.1);
+}
+
+input[type="range"]:focus {
+  border-color: var(--accent);
 }
 
 .checkbox-label {
@@ -154,9 +231,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   margin: 0;
+  cursor: pointer;
 }
 
 .workspaces-list {
@@ -172,12 +250,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
   padding: 12px;
   background: var(--background);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  transition: border-color 0.2s;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
-.workspace-item:hover {
+.settings-workspace-item:hover {
   border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .settings-workspace-info {
@@ -204,7 +284,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .workspace-label-edit {
   font-size: 1em;
   font-weight: 500;
-  padding: 4px 8px;
+  padding: 6px 10px;
   background: var(--background);
   border: 1px solid var(--accent);
   border-radius: 4px;
@@ -215,7 +295,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 .workspace-label-edit:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
 }
 
 .workspace-path {
@@ -238,7 +318,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9em;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: all 0.2s ease;
 }
 
 .workspace-actions button:active {
@@ -272,16 +352,23 @@ input[type="range"]::-webkit-slider-thumb:hover {
   padding: 12px;
   background: var(--background);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .workspace-label-input input {
   flex: 1;
-  padding: 8px;
+  padding: 8px 12px;
   background: var(--background-lighter);
   border: 1px solid var(--border);
   border-radius: 4px;
   color: var(--text-primary);
+  font-size: 0.95em;
+}
+
+.workspace-label-input input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
 }
 
 .workspace-label-input button {
@@ -289,7 +376,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .workspace-label-input button:active {
@@ -297,14 +385,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .workspace-label-input button:first-of-type {
-  background: var(--background-lighter);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
+  background: var(--accent);
+  color: white;
+  border: none;
 }
 
 .workspace-label-input button:first-of-type:hover {
-  background: var(--background-hover);
-  border-color: var(--text-secondary);
+  background: var(--accent-hover, var(--accent));
+  filter: brightness(1.1);
 }
 
 .workspace-label-input button:first-of-type:disabled {
@@ -328,16 +416,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
   padding: 12px;
   background: var(--background-lighter);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 6px;
   color: var(--text-primary);
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .add-workspace-button:hover {
   background: var(--background-hover);
-  border-color: var(--text-secondary);
+  border-color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .add-workspace-button:active {
@@ -355,15 +445,17 @@ input[type="range"]::-webkit-slider-thumb:hover {
   padding: 12px;
   background: var(--background-lighter);
   border: 1px solid #ff4444;
-  border-radius: 4px;
+  border-radius: 6px;
   color: #ff4444;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .reset-button:hover {
   background: rgba(255, 68, 68, 0.1);
+  transform: translateY(-1px);
 }
 
 .reset-button:active {
