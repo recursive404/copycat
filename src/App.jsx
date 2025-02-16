@@ -388,8 +388,45 @@ function App() {
         />
         <div className="main-container">
           <div className="content-container">
-            <PreviewWindow {...previewWindowProps} style={{ opacity: settings.previewOpacity }} />
-            <div className="action-area" style={{ opacity: settings.promptOpacity }}>
+            <PreviewWindow 
+              {...previewWindowProps} 
+              style={{ 
+                opacity: settings.previewOpacity,
+                height: `calc(100% - ${settings.promptHeight || '200px'})`,
+                transition: 'height 0.1s ease'
+              }} 
+            />
+            <div 
+              className="resize-handle"
+              onMouseDown={(e) => {
+                const startY = e.clientY;
+                const startHeight = settings.promptHeight ? parseInt(settings.promptHeight) : 200;
+                
+                const handleMouseMove = (e) => {
+                  const delta = startY - e.clientY;
+                  const newHeight = Math.max(100, Math.min(800, startHeight + delta));
+                  onSettingsChange({
+                    ...settings,
+                    promptHeight: `${newHeight}px`
+                  });
+                };
+                
+                const handleMouseUp = () => {
+                  document.removeEventListener('mousemove', handleMouseMove);
+                  document.removeEventListener('mouseup', handleMouseUp);
+                };
+                
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+              }}
+            />
+            <div 
+              className="action-area" 
+              style={{ 
+                opacity: settings.promptOpacity,
+                height: settings.promptHeight || '200px'
+              }}
+            >
               <PromptInput {...promptInputProps} />
             </div>
           </div>

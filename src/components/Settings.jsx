@@ -158,6 +158,23 @@ const Settings = ({ settings, onSettingsChange, workspace, setWorkspace }) => {
             </div>
           </label>
         </div>
+
+        <div className="settings-group">
+          <label>
+            Prompt Input Height
+            <div className="range-with-value">
+              <input
+                type="range"
+                min="100"
+                max="800"
+                step="10"
+                value={parseInt(settings.promptHeight) || 200}
+                onChange={(e) => handleChange('promptHeight', `${e.target.value}px`)}
+              />
+              <span>{settings.promptHeight || '200px'}</span>
+            </div>
+          </label>
+        </div>
       </div>
     </>
   );
